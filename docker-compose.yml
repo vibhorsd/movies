@@ -1,0 +1,16 @@
+npmcache:
+    build: .
+    dockerfile: docker/cache/Dockerfile
+    volumes:
+        - "/opt/movies/node_modules"
+movies:
+    build: .
+    dockerfile: docker/app/Dockerfile
+    ports:
+        - "3000:3000"
+    volumes:
+        - "./:/opt/movies"
+    volumes_from:
+        - npmcache
+    links:
+        - npmcache

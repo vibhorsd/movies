@@ -1,0 +1,40 @@
+{
+  "name": "movies",
+  "version": "1.0.0",
+  "description": "Movies browser app",
+  "main": "index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha",
+    "lint": "jshint .",
+    "validate": "npm ls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vibhorsd/movies.git"
+  },
+  "keywords": [
+    "movies",
+    "react",
+    "material-ui"
+  ],
+  "author": "Vibhor Deshmukh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vibhorsd/movies/issues"
+  },
+  "homepage": "https://github.com/vibhorsd/movies#readme",
+  "dependencies": {
+    "express": "^4.13.3"
+  },
+  "devDependencies": {
+    "precommit-hook": "latest",
+    "jshint": "^2.8.0",
+    "chai": "^3.3.0",
+    "mocha": "^2.3.3"
+  },
+  "pre-commit": [
+    "lint",
+    "validate",
+    "test"
+  ]
+}
