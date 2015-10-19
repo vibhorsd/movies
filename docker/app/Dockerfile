@@ -3,10 +3,7 @@ MAINTAINER Vibhor Deshmukh "vibhor.deshmukh@globant.com"
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive  apt-get install -y curl
 RUN curl -sL https://deb.nodesource.com/setup_4.x | bash - && apt-get install -y nodejs
 RUN mkdir -p /opt/movies
-RUN mkdir -p /temp
-WORKDIR /temp
-COPY docker/app/init.sh ./
 WORKDIR /opt/movies
 VOLUME /opt/movies
 EXPOSE 3000
-ENTRYPOINT ["/bin/bash", "/temp/init.sh"]
+ENTRYPOINT ["/usr/bin/nodejs", "index.js"]
