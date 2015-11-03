@@ -8,7 +8,6 @@
     "build": "browserify -d app/browser.js > dist/bundle.js",
     "start": "babel-node app/server",
     "test": "jest",
-    "lint": "./node_modules/.bin/eslint --fix app",
     "postinstall": "npm run build",
     "validate": "npm ls"
   },
@@ -54,7 +53,6 @@
     "watchify": "3.5.0"
   },
   "pre-commit": [
-    "lint",
     "validate",
     "test"
   ],

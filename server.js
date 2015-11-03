@@ -10,6 +10,6 @@ var port = process.env.PORT || 3000;
 app.get("/", routes.index);
 app.use("/", express.static(__dirname + "/public/"));
 
-http.createServer(app).listen(port, function() {
-  console.log("Express server listening on port " + port);
+http.createServer(app).listen(port, function () {
+    console.log("Express server listening on port " + port);
 });

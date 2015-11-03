@@ -6,7 +6,7 @@ import TestUtils from "react-addons-test-utils";
 const Home = require("../Home");
 
 describe("home", () => {
-    var home = TestUtils.renderIntoDocument(<Home />);
+    var home = TestUtils.renderIntoDocument( < Home / > );
     it("renders", () => {
         var header = TestUtils.findRenderedDOMComponentWithClass(home, "page-header");
         expect(header).toBeDefined();
