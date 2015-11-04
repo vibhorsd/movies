@@ -1,8 +1,8 @@
 "use strict";
 
 var express = require("express"),
-    http = require("http"),
-    routes = require("./routes");
+http = require("http"),
+routes = require("./routes");
 
 var app = express();
 var port = process.env.PORT || 3000;
