@@ -18,7 +18,7 @@ app.use((req, res) => {
     markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
     markup += "</head>";
     markup += "<body>";
-    markup += "<div id=\"app\" className=\"container\">";
+    markup += "<div id=\"app\" class=\"container\">";
     markup += ReactDOMServer.renderToString(<App/>);
     markup += "</div>";
     markup += "<script src=\"bundle.js\"></script>";
@@ -29,3 +29,4 @@ app.use((req, res) => {
 
 const port = process.env.PORT || 3000;
 app.listen(port);
+console.log('Movie app server started @ port : ' + port);
