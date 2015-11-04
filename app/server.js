@@ -10,6 +10,7 @@ app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
 
 app.use((req, res) => {
+    var movies = [];
     var markup = "<!DOCTYPE html>";
     markup += "<html>";
     markup += "<head>";
@@ -18,7 +19,7 @@ app.use((req, res) => {
     markup += "</head>";
     markup += "<body>";
     markup += "<div id=\"app\" class=\"container\">";
-    markup += ReactDOMServer.renderToString( < App / > );
+    markup += ReactDOMServer.renderToString( < App allMovies={movies} /> );
     markup += "</div>";
     markup += "<script src=\"bundle.js\"></script>";
     markup += "</body>";

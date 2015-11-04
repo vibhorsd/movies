@@ -5,33 +5,27 @@ import {
 from "material-ui";
 
 export default class Tile extends React.Component {
-        /**
-         * render
-         * @return {ReactElement} markup
-         */
-        render() {
-            return ( < Card >
-                < CardHeader title = "Title"
-                subtitle = "Subtitle"
-                avatar = { < Avatar > A < /Avatar>}/ >
-                        < CardHeader
-                    title = "Demo Url Based Avatar"
-                    subtitle = "Subtitle"
-                    avatar = "http://lorempixel.com/100/100/nature/" / >
-                        < CardMedia overlay = { < CardTitle title = "Title"
-                            subtitle = "Subtitle" / >
-                        } >
-                        < img src = "http://lorempixel.com/600/337/nature/" / >
-                        < /CardMedia> < CardTitle title = "Title"
-                    subtitle = "Subtitle" / >
-                        < CardActions >
-                        < FlatButton label = "Action1" / >
-                        < FlatButton label = "Action2" / >
-                        < /CardActions> < CardText >
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Donec mattis pretium massa.Aliquam erat volutpat.Nulla facilisi.
-                    Donec vulputate interdum sollicitudin.Nunc lacinia auctor quam sed pellentesque.
-                    Aliquam dui mauris, mattis quis lacus id, pellentesque lobortis odio. < /CardText> < /Card >
-                );
-            }
-        }
+    /**
+    * render
+    * @return {ReactElement} markup
+    */
+    render() {
+        var poster_path = "http://image.tmdb.org/t/p/original/" + this.props.component.poster_path;
+        var backdrop_path = "http://image.tmdb.org/t/p/original/" + this.props.component.backdrop_path;
+        return ( < Card >
+            < CardHeader title = {this.props.component.title}
+            avatar = {backdrop_path}/ >
+            < CardMedia overlay = { < CardTitle title = "Title"
+                subtitle = "Subtitle" / >
+            } >
+            < img src = {poster_path} / >
+            < /CardMedia> < CardTitle title = "Title"
+            subtitle = "Subtitle" / >
+            < CardActions >
+            < FlatButton label = "Action1" / >
+            < FlatButton label = "Action2" / >
+            < /CardActions> < CardText >
+            {this.props.component.overview} < /CardText> < /Card >
+        );
+    }
+}
