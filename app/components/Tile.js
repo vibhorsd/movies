@@ -1,6 +1,7 @@
 import React from "react";
 import {
-    Card, CardHeader, Avatar, CardMedia, CardTitle, CardActions, FlatButton, CardText
+    Card, CardHeader, Avatar, CardMedia, CardTitle, CardActions, FlatButton,
+    CardText
 }
 from "material-ui";
 
@@ -10,6 +11,7 @@ export default class Tile extends React.Component {
     * @return {ReactElement} markup
     */
     render() {
+        
         var poster_path = "http://image.tmdb.org/t/p/original/" + this.props.component.poster_path;
         var backdrop_path = "http://image.tmdb.org/t/p/original/" + this.props.component.backdrop_path;
         return ( < Card >

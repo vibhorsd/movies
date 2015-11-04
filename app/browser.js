@@ -49,5 +49,4 @@ var moviesDef = [{
     "vote_count": 639
 }];
 var movies = [];
-// React.render(<App />, document);
 ReactDOM.render(<App allMovies={movies}/>, document.getElementById("app"));

@@ -15,7 +15,8 @@ app.use((req, res) => {
     markup += "<html>";
     markup += "<head>";
     markup += "<title>Movies app</title>";
-    markup += "<link href='https://fonts.googleapis.com/css?family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
+    markup += "<link href='https://fonts.googleapis.com/css?";
+    markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
     markup += "</head>";
     markup += "<body>";
     markup += "<div id=\"app\" class=\"container\">";
