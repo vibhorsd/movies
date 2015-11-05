@@ -15,7 +15,9 @@ var keyMirror = function(obj) {
 const ActionTypes = keyMirror({
     MOVIE_FETCH : null
 });
-
+const IMDB_API_KEY = "541f4bed734234b7ec445338523c49fe";
+const IMDB_BASE_URL = "http://api.themoviedb.org/3/";
+const IMDB_IMG_BASE_URL = "http://image.tmdb.org/t/p/original/";
 export default {
     ActionTypes
 };

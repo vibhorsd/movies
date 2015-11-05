@@ -4,6 +4,7 @@ import {
     CardText
 }
 from "material-ui";
+import AppConst from "../constants"
 
 export default class Tile extends React.Component {
     /**
