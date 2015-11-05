@@ -1,42 +1,34 @@
 import express from "express";
 import React from "react";
 import ReactDOMServer from "react-dom/server";
+import request from "sync-request";
 import path from "path";
-import request from "request";
 import App from "./components/App";
 import AppConst from "./constants/"
 
 const app = express();
-
+const api_key = "541f4bed734234b7ec445338523c49fe";
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
-
 
 var get_movies = function() {
     var movies = [];
     var cur_year = new Date().getFullYear();
-    var movie_url = "http://api.themoviedb.org/3/discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY;
+    var movie_url = "http://api.themoviedb.org/3/discover/movie?primary_release_year=" + cur_year + "&api_key=" + api_key;
     try {
-        request.get({
-            url: movie_url
-            
-        }, function (movieErr, movieResponse, movieBody) {
-            console.log("test")
-            var movies = [];
-            if (movieErr) {
-                console.log("API ERR : " + movieErr)
-            } else {
-                try {
-                    
-                    var movieData = JSON.parse(movieBody);
-                    console.log("movieData : " + movieData)
-                    movies = movieData;
-                    
-                } catch (err) {
-                    console.log("PARSE ERR : " + err)
-                }
+        var resp = request('GET', movie_url);
+        var movieBody = resp.body.toString('utf-8');
+        if(movieBody){
+            try {
+                
+                var movieData = JSON.parse(movieBody);
+                //console.log("movieData : " + JSON.stringify(movieData))
+                movies = movieData.results;
+                
+            } catch (err) {
+                console.log("PARSE ERR : " + err)
             }
-        });
+        }
     } catch (err) {
         console.log("GET ERR : " + err)
     }
@@ -44,7 +36,8 @@ var get_movies = function() {
 }
 app.use((req, res) => {
     var movies = get_movies();
-    console.log("Movies ::: " + JSON.stringify(movies))
+    console.log("Movies : " + JSON.stringify(movies))
+    
     var markup = "<!DOCTYPE html>";
     markup += "<html>";
     markup += "<head>";
@@ -59,6 +52,7 @@ app.use((req, res) => {
     markup += "<script src=\"bundle.js\"></script>";
     markup += "</body>";
     markup += "</html>";
+    
     res.send(markup);
 });
 
