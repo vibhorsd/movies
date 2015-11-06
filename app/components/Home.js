@@ -1,5 +1,9 @@
 import React from "react";
 import Tile from "./Tile";
+import {
+    GridList
+}
+from "material-ui";
 /**
 * Home page component
 */
@@ -19,7 +23,9 @@ export default class Home extends React.Component {
             movieList.push(<Tile key={key} component= {allMovies[key]} />);
         }
         return ( < div >
-            {movieList}
+            <GridList cellHeight={500} cols={3} padding={1} style={{ overflowY: 'auto'}} >
+                {movieList}
+            </GridList>
             </ div>
         );
     }
