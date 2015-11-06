@@ -1,72 +1,74 @@
 {
-    "name": "movies",
-    "version": "1.0.0",
-    "description": "Movies browser app",
-    "main": "server.js",
-    "scripts": {
-        "watch": "watchify -d app/browser.js -o dist/bundle.js -v",
-        "build": "browserify -d app/browser.js> dist/bundle.js",
-        "start": "babel-node app/server",
-        "test": "jest",
-        "postinstall": "npm run build",
-        "validate": "npm ls"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/vibhorsd/movies.git"
-    },
-    "keywords": [
-        "movies",
-        "react",
-        "material-ui"
-    ],
-    "author": "Vibhor Deshmukh",
-    "license": "ISC",
-    "bugs": {
-        "url": "https://github.com/vibhorsd/movies/issues"
-    },
-    "homepage": "https://github.com/vibhorsd/movies#readme",
-    "dependencies": {
-        "babelify": "6.4.0",
-        "browserify": "12.0.1",
-        "classnames": "2.2.0",
-        "express": "4.13.3",
-        "flux": "2.1.1",
-        "keymirror": "0.1.1",
-        "material-ui": "0.13.1",
-        "object-assign": "4.0.1",
-        "react": "0.14.1",
-        "react-addons-create-fragment": "0.14.1",
-        "react-addons-pure-render-mixin": "0.14.1",
-        "react-addons-transition-group": "0.14.1",
-        "react-addons-update": "0.14.1",
-        "react-tap-event-plugin": "0.2.1",
-        "redis": "2.3.0",
-        "superagent": "1.4.0"
-    },
-    "devDependencies": {
-        "babel-jest": "5.3.0",
-        "eslint": "1.7.3",
-        "eslint-plugin-react": "3.6.3",
-        "estraverse": "4.1.1",
-        "jest-cli": "0.6.1",
-        "react-addons-test-utils": "0.14.1",
-        "react-dom": "0.14.1",
-        "watchify": "3.5.0"
-    },
-    "pre-commit": [
-        "validate",
-        "test"
-    ],
-    "browserify": {
-        "transform": [
-            "babelify"
-        ]
-    },
-    "jest": {
-        "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
-        "unmockedModulePathPatterns": [
-            "node_modules/react"
-        ]
-    }
+  "name": "movies",
+  "version": "1.0.0",
+  "description": "Movies browser app",
+  "main": "server.js",
+  "scripts": {
+    "watch": "watchify -d app/browser.js -o dist/bundle.js -v",
+    "build": "browserify -d app/browser.js> dist/bundle.js",
+    "start": "babel-node app/server",
+    "test": "jest",
+    "postinstall": "npm run build",
+    "validate": "npm ls"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vibhorsd/movies.git"
+  },
+  "keywords": [
+    "movies",
+    "react",
+    "material-ui"
+  ],
+  "author": "Vibhor Deshmukh",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vibhorsd/movies/issues"
+  },
+  "homepage": "https://github.com/vibhorsd/movies#readme",
+  "dependencies": {
+    "async": "^1.5.0",
+    "babelify": "6.4.0",
+    "browserify": "12.0.1",
+    "classnames": "2.2.0",
+    "express": "4.13.3",
+    "flux": "2.1.1",
+    "keymirror": "0.1.1",
+    "material-ui": "0.13.1",
+    "object-assign": "4.0.1",
+    "q": "^1.4.1",
+    "react": "0.14.1",
+    "react-addons-create-fragment": "0.14.1",
+    "react-addons-pure-render-mixin": "0.14.1",
+    "react-addons-transition-group": "0.14.1",
+    "react-addons-update": "0.14.1",
+    "react-tap-event-plugin": "0.2.1",
+    "redis": "2.3.0",
+    "superagent": "1.4.0"
+  },
+  "devDependencies": {
+    "babel-jest": "5.3.0",
+    "eslint": "1.7.3",
+    "eslint-plugin-react": "3.6.3",
+    "estraverse": "4.1.1",
+    "jest-cli": "0.6.1",
+    "react-addons-test-utils": "0.14.1",
+    "react-dom": "0.14.1",
+    "watchify": "3.5.0"
+  },
+  "pre-commit": [
+    "validate",
+    "test"
+  ],
+  "browserify": {
+    "transform": [
+      "babelify"
+    ]
+  },
+  "jest": {
+    "scriptPreprocessor": "<rootDir>/node_modules/babel-jest",
+    "unmockedModulePathPatterns": [
+      "node_modules/react"
+    ]
+  }
 }

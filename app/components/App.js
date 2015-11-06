@@ -26,10 +26,10 @@ export default class App extends React.Component {
     }
     /**
     * render
-    * @return {ReactElement} markup
+    * @return {XML} markup
     */
     render() {
-        return ( < Home allMovies={this.state.allMovies}/ > );
+        return ( < Home allMovies={this.state.allMovies} /> );
     }
     _onChange() {
         this.allMovies = getMovieState();
