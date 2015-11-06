@@ -6,6 +6,6 @@ apt-get install -y nodejs && npm install -g npm
 RUN mkdir -p /opt/movies
 WORKDIR /opt/movies
 COPY package.json ./
-RUN npm install -d -y
+RUN npm set registry http://192.168.99.100:4873/ && npm install -d -y
 VOLUME /opt/movies/node_modules
 ENTRYPOINT /usr/bin/tail -f /dev/null
