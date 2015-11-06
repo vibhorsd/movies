@@ -39,6 +39,7 @@ class ServerCacheManager extends EventEmitter {
      */
     connect(){
         var deferred = Q.defer();
+
         async.series([
             function(){
                 deferred.resolve();
@@ -50,14 +51,13 @@ class ServerCacheManager extends EventEmitter {
             }
         ]);
 
-        return deferred;
+        return deferred.promise;
     }
 
     addKey(key , object){
         var deferred = Q.defer();
         this._localDataStorage[key] = object;
         setTimeout(function(){
-
             async.series([
                 function(){
                     deferred.resolve(key);
@@ -70,12 +70,12 @@ class ServerCacheManager extends EventEmitter {
                 }
             ]);
         },0.1);
-        return deferred;
+        return deferred.promise;
     }
 
     updateKey(key , updateObj){
         var deferred = Q.defer();
-        this._localDataStorage[key] = object;
+        this._localDataStorage[key] = updateObj;
         setTimeout(function(){
             async.series([
                 function(){
@@ -89,7 +89,7 @@ class ServerCacheManager extends EventEmitter {
                 }
             ]);
         },0.1);
-        return deferred;
+        return deferred.promise;
     }
 
     removeKey(key){
@@ -117,7 +117,7 @@ class ServerCacheManager extends EventEmitter {
                 }
             ]);
         }
-        return deferred;
+        return deferred.promise;
     }
 
     getKey (key, callback){
@@ -126,7 +126,7 @@ class ServerCacheManager extends EventEmitter {
                 var value = this._localDataStorage[key];
                 callback(null, value);
             }
-        },0.1);
+        }.bind(this),0.1);
     }
 
 }
