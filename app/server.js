@@ -7,14 +7,15 @@ import App from "./components/App";
 import AppConst from "./constants/"
 
 const app = express();
-const api_key = "541f4bed734234b7ec445338523c49fe";
+
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
 
 var get_movies = function() {
     var movies = [];
     var cur_year = new Date().getFullYear();
-    var movie_url = "http://api.themoviedb.org/3/discover/movie?primary_release_year=" + cur_year + "&api_key=" + api_key;
+    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY;
+    
     try {
         var resp = request('GET', movie_url);
         var movieBody = resp.body.toString('utf-8');
@@ -34,9 +35,10 @@ var get_movies = function() {
     }
     return movies
 }
+
 app.use((req, res) => {
     var movies = get_movies();
-    console.log("Movies : " + JSON.stringify(movies))
+    //console.log("Movies : " + JSON.stringify(movies))
     
     var markup = "<!DOCTYPE html>";
     markup += "<html>";
@@ -49,6 +51,7 @@ app.use((req, res) => {
     markup += "<div id=\"app\" class=\"container\">";
     markup += ReactDOMServer.renderToString( < App allMovies={movies} /> );
     markup += "</div>";
+    markup += "<script id=\"movie-data\">" + JSON.stringify(movies) + "</script>"
     markup += "<script src=\"bundle.js\"></script>";
     markup += "</body>";
     markup += "</html>";

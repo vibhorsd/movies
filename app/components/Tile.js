@@ -12,10 +12,12 @@ export default class Tile extends React.Component {
     * @return {ReactElement} markup
     */
     render() {
-        
-        var poster_path = "http://image.tmdb.org/t/p/original/" + this.props.component.poster_path;
-        var backdrop_path = "http://image.tmdb.org/t/p/original/" + this.props.component.backdrop_path;
-        return ( < Card >
+        //console.log("Tile render")
+        var poster_path = AppConst.IMDB_IMG_BASE_URL + "w500/" + this.props.component.poster_path;
+        var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.component.backdrop_path;
+        //console.log(poster_path)
+        return (
+            < Card >
             < CardHeader title = {this.props.component.title}
             avatar = {backdrop_path}/ >
             < CardMedia overlay = { < CardTitle title = "Title"
