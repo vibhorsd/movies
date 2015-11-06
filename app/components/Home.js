@@ -9,9 +9,9 @@ export default class Home extends React.Component {
     * @return {ReactElement} markup
     */
     render() {
-        if (Object.keys(this.props.allMovies).length < 1) {
-            return null;
-        }
+        /*if (Object.keys(this.props.allMovies).length < 1) {
+        return null;
+        }*/
         var allMovies = this.props.allMovies;
         var movieList = [];
         
