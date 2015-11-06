@@ -16,16 +16,16 @@ export default class Tile extends React.Component {
         var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.component.backdrop_path;
         //console.log(poster_path)
         
-        return(<GridTile >
-            < Card >
-            < CardHeader title = {this.props.component.title} avatar = {backdrop_path}/>
-        < CardMedia overlay = { < CardTitle title = "Title" subtitle = "Subtitle" /> } >
-        < img src = {poster_path} />
-    </ CardMedia>
-    < CardTitle title = "Title" subtitle = "Subtitle" />
+        return(<GridTile style={{ overflowY: 'auto'}}>
+        < Card >
+        < CardHeader title = {this.props.component.title} avatar = {backdrop_path} />
+    
+    < CardMedia overlay = { < CardTitle title = {this.props.component.title} />} >
+    < img src = {poster_path} />
+</ CardMedia>
 < CardActions >
-< FlatButton label = "Action1" />
-< FlatButton label = "Action2" />
+< FlatButton label = "Like" />
+< FlatButton label = "Dislike" />
 </ CardActions>
 < CardText >
 {this.props.component.overview}
