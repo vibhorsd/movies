@@ -34,6 +34,30 @@ describe("ServerCache Test",()=>{
         //expect(cbsucess).toBeCalled();
     });
 
+    it("should add and expire", function(done){
+        this.timeout(15000);
+        var promise = serverCacheManager.addKey("key1","val", 5);
+
+        if (promise){
+            promise.then(function(){
+               setTimeout(function(){
+                   serverCacheManager.getValue("key1").then(function(value){
+                       assert.equal(value, null);
+                       done();
+                   }, function(err){
+                       console.log("Error while getting:" + err);
+                       done();
+                   });
+               }, 5100);
+            },function(err){
+                console.log("Error while adding:" + err);
+                assert.equal(null, err);
+                done();
+            });
+        }
+
+    });
+
     /*it("should update", (done) => {
         serverCacheManager.updateKey("key",{str:"hello world:1"}).then(function(){
             done();

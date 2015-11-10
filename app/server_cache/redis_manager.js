@@ -55,7 +55,7 @@ class RedisManager extends ServerCacheInterface {
 
         return deferred.promise;
     }
-    addKey(key , object){
+    addKey(key , object, expiry){
         var deferred = Q.defer();
         if (key && object) {
             if (this._status = this.STATUS.Connected){
@@ -63,15 +63,29 @@ class RedisManager extends ServerCacheInterface {
                     value : object
                 });
                 var redisKey  = this._getRedisKey(key);
-                this._redisClient.setex(redisKey, this._maxAliveSec, val, function(err){
-                    if (err === null) {
-                        deferred.resolve(key);
-                    }
-                    else {
-                        this.error_log("Redis Error:" + err);
-                        deferred.reject(AppConst.ServerCacheError.CACHE_SYS_ERROR);
-                    }
-                });
+
+                if (expiry && expiry > 0) {
+                    this._redisClient.setex(redisKey, expiry, val, function(err){
+                        if (err === null) {
+                            deferred.resolve(key);
+                        }
+                        else {
+                            this.error_log("Redis Error:" + err);
+                            deferred.reject(AppConst.ServerCacheError.CACHE_SYS_ERROR);
+                        }
+                    });
+                }
+                else {
+                    this._redisClient.set(redisKey,val, function(err){
+                        if (err === null) {
+                            deferred.resolve(key);
+                        }
+                        else {
+                            this.error_log("Redis Error:" + err);
+                            deferred.reject(AppConst.ServerCacheError.CACHE_SYS_ERROR);
+                        }
+                    });
+                }
             }
             else {
                 async.async.series([
@@ -134,13 +148,10 @@ class RedisManager extends ServerCacheInterface {
                         if (valueStr) {
                             var valObj = JSON.parse(valueStr);
                             var obj = valObj.value;
-                            //console.dir(valObj);
-                            //console.log(deferred.resolve.toString());
                             deferred.resolve(obj);
                         }
                         else {
-                            console.log("4");
-                            deferred.reject(AppConst.ServerCacheError.INVALID_KEY);
+                            deferred.resolve(null);
                         }
                     }
                     else {
@@ -150,7 +161,6 @@ class RedisManager extends ServerCacheInterface {
                 });
             }
             else {
-                console.log("5");
                 async.async.series([
                     function(){
                         deferred.reject(AppConst.ServerCacheError.NOT_CONNECTED);
@@ -159,7 +169,6 @@ class RedisManager extends ServerCacheInterface {
             }
         }
         else {
-            console.log("6");
             async.async.series([
                 function(){
                     deferred.reject(AppConst.ServerCacheError.INVALID_INPUT);
