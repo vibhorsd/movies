@@ -52,7 +52,7 @@ class ServerCacheManager extends EventEmitter {
             }
         ]);*/
 
-        return redisManager.connect(6379,"redis");
+        return redisManager.connect(6379,"redis"); // In case for localhost use redisManager.connect(6379,"127.0.0.1")
 
 
         //return deferred.promise;
