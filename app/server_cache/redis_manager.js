@@ -1,6 +1,6 @@
 /**
- * Created by pushanmitra on 09/11/15.
- */
+* Created by pushanmitra on 09/11/15.
+*/
 
 import keyMirror from "keymirror"
 import async from "async"
@@ -21,7 +21,7 @@ class RedisManager extends ServerCacheInterface {
             Error : "error"
         }
         this._status = this.STATUS.Disconnected;
-
+        
         this._maxAliveSec = 24 * 60 * 60;
         this._keyPrefix = "MOV";
         this.typeName = "RedisManager";
@@ -37,22 +37,22 @@ class RedisManager extends ServerCacheInterface {
         this._redisClient.on("connect", function(){
             this._status = this.STATUS.Connected;
             deferred.resolve();
-
+            
         }.bind(this));
-
+        
         this._redisClient.on("error", function(error){
-
+            
             if (this._status === this.STATUS.Connecting){
                 this._status = this.STATUS.Disconnected;
                 deferred.reject(error);
-
+                
             }
             else {
                 this._status = this.STATUS.Error;
                 this.error_log("Redis Error:" + error);
             }
         }.bind(this));
-
+        
         return deferred.promise;
     }
     addKey(key , object, expiry){
@@ -63,7 +63,7 @@ class RedisManager extends ServerCacheInterface {
                     value : object
                 });
                 var redisKey  = this._getRedisKey(key);
-
+                
                 if (expiry && expiry > 0) {
                     this._redisClient.setex(redisKey, expiry, val, function(err){
                         if (err === null) {
@@ -104,7 +104,7 @@ class RedisManager extends ServerCacheInterface {
         }
         return deferred.promise;
     }
-
+    
     removeKey(key) {
         var deferred = Q.defer();
         if (key) {
@@ -137,7 +137,7 @@ class RedisManager extends ServerCacheInterface {
         }
         return deferred.promise;
     }
-
+    
     getValue(key){
         var deferred = Q.defer();
         if (key) {
@@ -161,7 +161,7 @@ class RedisManager extends ServerCacheInterface {
                 });
             }
             else {
-                async.async.series([
+                async.series([
                     function(){
                         deferred.reject(AppConst.ServerCacheError.NOT_CONNECTED);
                     }

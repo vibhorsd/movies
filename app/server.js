@@ -20,10 +20,10 @@ serverCache.connect().then(function(){
     serverCache.error_log("Server cache connection Error:" + err);
 });
 
-var get_movies = function() {
+var get_movies = function(pageNum) {
     var movies = [];
     var cur_year = new Date().getFullYear();
-    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY;
+    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
     
     try {
         var resp = request('GET', movie_url);
@@ -45,8 +45,22 @@ var get_movies = function() {
     return movies
 }
 
+app.get("/fetch", (req, res) => {
+    //console.dir(req.params)
+    var pageNum = req.param('page_num');
+    var key = "page_" + pageNum;
+    
+    serverCache.getValue(key).then(function(movieList){
+        //console.log("movieList : " + JSON.stringify(movieList))
+        if(!movieList){
+            movieList = get_movies(pageNum);
+        }
+        
+        res.send(movieList)
+    });
+});
 app.use((req, res) => {
-    var movies = get_movies();
+    var movies = get_movies(1);
     //console.log("Movies : " + JSON.stringify(movies))
     
     var markup = "<!DOCTYPE html>";
