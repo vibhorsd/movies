@@ -58,8 +58,8 @@ class ServerCacheManager extends EventEmitter {
         //return deferred.promise;
     }
 
-    addKey(key , object){
-        return redisManager.addKey(key, object);
+    addKey(key , object, expiry){
+        return redisManager.addKey(key, object, expiry);
         /*var deferred = Q.defer();
         this._localDataStorage[key] = object;
         setTimeout(function(){
