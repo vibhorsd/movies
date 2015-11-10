@@ -34,11 +34,11 @@ export default class ServerBaseController extends EventEmitter {
     }
     colorText(message, color){
         if (this._colorCodes && this._colorCodes[color]) {
-            if (this._colorCodes[color]) {
+            /*if (this._colorCodes[color]) {
                 return '\0o33[0;' + this._colorCodes[color] + 'm' + message + '\0o33[0m';
             } else if (color) {
                 return '\0o33[' + color + 'm' + message + '\0o33[0m';
-            }
+            }*/
             return message;
         } else {
             return message;

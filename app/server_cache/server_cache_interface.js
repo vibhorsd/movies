@@ -4,7 +4,7 @@
 
 import app_utl from "../app_utl"
 
-export default class SerevrCacheInterface extends app_utl.baseController {
+export default class SerevrCacheInterface extends app_utl.BaseController {
     connect(){}
     addKey(){}
     removeKey(){}

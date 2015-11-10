@@ -6,8 +6,9 @@ import keyMirror from "keymirror"
 import async from "async"
 import Q from  "q"
 import redisManager from "./redis_manager"
+import app_utl from "../app_utl"
 
-class ServerCacheManager extends EventEmitter {
+class ServerCacheManager extends app_utl.BaseController  {
     /*!
         @constructor
     * */
