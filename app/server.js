@@ -5,11 +5,20 @@ import request from "sync-request";
 import path from "path";
 import App from "./components/App";
 import AppConst from "./constants/"
-
+import serverCache from "./server_cache"
 const app = express();
 
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
+
+// Connecting server cache
+serverCache.log("Connecting to server cache");
+serverCache.connect().then(function(){
+    console.log('[Connected]');
+    serverCache.log("Server cache [Connected]");
+},function(err){
+    serverCache.error_log("Server cache connection Error:" + err);
+});
 
 var get_movies = function() {
     var movies = [];

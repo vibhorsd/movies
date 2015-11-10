@@ -4,5 +4,5 @@
 import baseController from "./server_base_controller";
 
 export  default {
-    baseController : baseController
+    BaseController : baseController
 }
