@@ -5,6 +5,7 @@ import EventEmitter  from "events"
 import keyMirror from "keymirror"
 import async from "async"
 import Q from  "q"
+import redisManager from "./redis_manager"
 
 class ServerCacheManager extends EventEmitter {
     /*!
@@ -40,7 +41,7 @@ class ServerCacheManager extends EventEmitter {
     connect(){
         var deferred = Q.defer();
 
-        async.series([
+        /*async.series([
             function(){
                 deferred.resolve();
                 this.emit(this.EVENTS.STORE_CONNECTED,{});
@@ -49,13 +50,17 @@ class ServerCacheManager extends EventEmitter {
                 this.state = this.STATE.ready;
                 this.emit(this.EVENTS.STORE_READY,{});
             }
-        ]);
+        ]);*/
 
-        return deferred.promise;
+        return redisManager.connect(6379,"127.0.0.1");
+
+
+        //return deferred.promise;
     }
 
     addKey(key , object){
-        var deferred = Q.defer();
+        return redisManager.addKey(key, object);
+        /*var deferred = Q.defer();
         this._localDataStorage[key] = object;
         setTimeout(function(){
             async.series([
@@ -70,7 +75,7 @@ class ServerCacheManager extends EventEmitter {
                 }
             ]);
         },0.1);
-        return deferred.promise;
+        return deferred.promise;*/
     }
 
     updateKey(key , updateObj){
@@ -93,7 +98,8 @@ class ServerCacheManager extends EventEmitter {
     }
 
     removeKey(key){
-        var deferred = Q.defer();
+        return redisManager.removeKey(key);
+        /*var deferred = Q.defer();
         if (this._localDataStorage[key]){
             this._localDataStorage[key] = null;
             delete this._localDataStorage[key];
@@ -117,16 +123,18 @@ class ServerCacheManager extends EventEmitter {
                 }
             ]);
         }
-        return deferred.promise;
+        return deferred.promise;*/
     }
 
-    getKey (key, callback){
-        setTimeout(function(){
+    getValue (key){
+        var obj = redisManager.getValue(key);
+        return obj;
+        /*setTimeout(function(){
             if (callback){
                 var value = this._localDataStorage[key];
                 callback(null, value);
             }
-        }.bind(this),0.1);
+        }.bind(this),0.1);*/
     }
 
 }
