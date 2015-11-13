@@ -21,6 +21,7 @@ serverCache.connect().then(function(){
 });
 
 var get_movies = function(pageNum) {
+    console.log("Fetch movie list ......")
     var movies = [];
     var cur_year = new Date().getFullYear();
     var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
@@ -53,11 +54,11 @@ app.get("/fetch", (req, res) => {
         //console.log("movieList : " + JSON.stringify(movieList))
         if(movieList == null){
             movieList = get_movies(pageNum);
-            var promise = serverCache.addKey(key,movieList);
+            var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
             for (var index in movieList) {
                 var movie = movieList[index];
                 //console.log(movie["id"] + " : " + movie["title"])
-                var moviePromise = serverCache.addKey(movie["id"],movie);
+                var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
             }
         }
         
@@ -70,11 +71,11 @@ app.use((req, res) => {
     serverCache.getValue(key).then(function(movieList){
         if(movieList == null){
             movieList = get_movies(1);
-            var promise = serverCache.addKey(key,movieList);
+            var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
             for (var index in movieList) {
                 var movie = movieList[index];
                 //console.log(movie["id"] + " : " + movie["title"])
-                var moviePromise = serverCache.addKey(movie["id"],movie);
+                var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
             }
         }
         var markup = "<!DOCTYPE html>";
