@@ -6,16 +6,23 @@ import path from "path";
 import App from "./components/App";
 import AppConst from "./constants/"
 import serverCache from "./server_cache"
+import app_utl from "./app_utl"
+
 const app = express();
 
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
+
 
 // Connecting server cache
 serverCache.log("Connecting to server cache");
 serverCache.connect().then(function(){
     console.log('[Connected]');
     serverCache.log("Server cache [Connected]");
+    const port = process.env.PORT || 3000;
+    app.listen(port);
+    serverCache.log('Movie app server started @ port : ' + port);
+
 },function(err){
     serverCache.error_log("Server cache connection Error:" + err);
 });
@@ -97,6 +104,4 @@ app.use((req, res) => {
     });
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port);
-console.log('Movie app server started @ port : ' + port);
+
