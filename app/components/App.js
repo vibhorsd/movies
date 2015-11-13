@@ -5,20 +5,25 @@ import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
+var $ = require ('jquery');
 
 injectTapEventPlugin();
-function getMovieState() {
-    return {
-        allMovies: MovieStore.getAll()
-    };
-}
+/*function getMovieState() {
+//var ml = MovieStore.getAll();
+//console.dir(ml);
+return {
+allMovies: MovieStore.getAll()
+};
+}*/
 /**
 * Application component
 */
 export default class App extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {allMovies : props.allMovies, pageNum : 100}
+        this._onChange = this._onChange.bind(this);
+        this.state = {allMovies : props.allMovies, pageNum : props.totalPages};
+        
     }
     componentDidMount(){
         MovieStore.addChangeListener(this._onChange);
@@ -26,16 +31,22 @@ export default class App extends React.Component {
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
-    _onChange() {
-        console.log("page change")
-        this.allMovies = getMovieState();
-        this.setState();
+    _onChange(movies) {
+        console.log("_onChange...")
+        this.setState({allMovies: movies});
+    }
+    
+    fetchMovie(pageNumber) {
+        console.log("fetchMovie ")
+        var pageNumber = pageNumber.selected + 1;
+        MovieFetchAction.fetch(pageNumber);
     }
     /**
     * render
     * @return {XML} markup
     */
     render() {
+        console.log("App render")
         return (
             <InlineCss stylesheet={`
                     #react-paginate ul {
@@ -59,7 +70,7 @@ export default class App extends React.Component {
                             pageNum={this.state.pageNum}
                             marginPagesDisplayed={2}
                             pageRangeDisplayed={5}
-                            clickCallback={this._onChange}
+                            clickCallback={this.fetchMovie}
                             containerClassName={"pagination"}
                             subContainerClassName={"pages pagination"}
                             activeClassName={"active"} >

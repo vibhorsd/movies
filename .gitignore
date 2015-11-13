@@ -71,3 +71,7 @@ Session.vim
 ### IntelliJ ####
 *.iml
 *.idea/*
+
+### Redis ###
+*.rdb
+*.db
