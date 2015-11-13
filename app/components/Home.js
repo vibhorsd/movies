@@ -20,7 +20,10 @@ export default class Home extends React.Component {
         var movieList = [];
         
         for (var key in allMovies) {
-            movieList.push(<Tile key={key} component= {allMovies[key]} />);
+            var movie = allMovies[key];
+            if(movie.poster_path != null){
+                movieList.push(<Tile key={key} component= {movie} />);
+            }
         }
         return ( < div >
             <GridList cellHeight={500} cols={3} padding={1} style={{ overflowY: 'auto'}} >
