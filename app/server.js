@@ -22,7 +22,7 @@ serverCache.connect().then(function(){
     const port = process.env.PORT || 3000;
     app.listen(port);
     serverCache.log('Movie app server started @ port : ' + port);
-
+    
 },function(err){
     serverCache.error_log("Server cache connection Error:" + err);
 });
@@ -30,6 +30,7 @@ serverCache.connect().then(function(){
 var get_movies = function(pageNum) {
     console.log("Fetch movie list ......")
     var movies = [];
+    var totalPages = 1;
     var cur_year = new Date().getFullYear();
     var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
     //console.log("movie_url : " + movie_url)
@@ -42,7 +43,7 @@ var get_movies = function(pageNum) {
                 var movieData = JSON.parse(movieBody);
                 //console.log("movieData : " + JSON.stringify(movieData))
                 movies = movieData.results;
-                
+                totalPages = movieData.total_pages;
             } catch (err) {
                 console.log("PARSE ERR : " + err)
             }
@@ -50,7 +51,7 @@ var get_movies = function(pageNum) {
     } catch (err) {
         console.log("GET ERR : " + err)
     }
-    return movies
+    return {movies : movies, totalPages: totalPages}
 }
 
 app.get("/fetch", (req, res) => {
@@ -60,7 +61,8 @@ app.get("/fetch", (req, res) => {
     serverCache.getValue(key).then(function(movieList){
         //console.log("movieList : " + JSON.stringify(movieList))
         if(movieList == null){
-            movieList = get_movies(pageNum);
+            var movieInfo = get_movies(pageNum);
+            movieList = movieInfo.movies;
             var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
             for (var index in movieList) {
                 var movie = movieList[index];
@@ -74,35 +76,43 @@ app.get("/fetch", (req, res) => {
 });
 app.use((req, res) => {
     var key = "page_1";
-    
+    var totalPageKey = "total_pages";
+    var totalPages = 1;
+    serverCache.removeKey(key);
     serverCache.getValue(key).then(function(movieList){
-        if(movieList == null){
-            movieList = get_movies(1);
-            var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
-            for (var index in movieList) {
-                var movie = movieList[index];
-                //console.log(movie["id"] + " : " + movie["title"])
-                var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
+        serverCache.getValue(totalPageKey).then(function(totalPages){
+            if(movieList == null){
+                var movieInfo = get_movies(1);
+                movieList = movieInfo.movies;
+                totalPages = movieInfo.totalPages;
+                //console.log("totalPages : " + totalPages)
+                var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
+                var totalPagePromise = serverCache.addKey(totalPageKey, totalPages, AppConst.SERVER_CACHE_EXPIRY);
+                for (var index in movieList) {
+                    var movie = movieList[index];
+                    //console.log(movie["id"] + " : " + movie["title"])
+                    var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
+                }
             }
-        }
-        var markup = "<!DOCTYPE html>";
-        markup += "<html>";
-        markup += "<head>";
-        markup += "<title>Movies app</title>";
-        markup += "<link href='https://fonts.googleapis.com/css?";
-        markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
-        markup += "</head>";
-        markup += "<body>";
-        markup += "<div id=\"app\" class=\"container\">";
-        markup += ReactDOMServer.renderToString( < App allMovies={movieList} /> );
-        markup += "</div>";
-        markup += "<script id=\"movie-data\">" + JSON.stringify(movieList) + "</script>"
-        markup += "<script src=\"bundle.js\"></script>";
-        markup += "</body>";
-        markup += "</html>";
-        
-        res.send(markup);
+            
+            var markup = "<!DOCTYPE html>";
+            markup += "<html>";
+            markup += "<head>";
+            markup += "<title>Movies app</title>";
+            markup += "<link href='https://fonts.googleapis.com/css?";
+            markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
+            markup += "</head>";
+            markup += "<body>";
+            markup += "<div id=\"app\" class=\"container\">";
+            markup += ReactDOMServer.renderToString( < App allMovies={movieList} totalPages={totalPages} /> );
+            markup += "</div>";
+            markup += "<script id=\"movie-data\">" + JSON.stringify(movieList) + "</script>"
+            markup += "<script id=\"total-pages-data\">" + totalPages + "</script>"
+            markup += "<script src=\"bundle.js\"></script>";
+            markup += "</body>";
+            markup += "</html>";
+            
+            res.send(markup);
+        });
     });
 });
-
-

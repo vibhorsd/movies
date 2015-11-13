@@ -22,7 +22,7 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this._onChange = this._onChange.bind(this);
-        this.state = {allMovies : props.allMovies, pageNum : 100};
+        this.state = {allMovies : props.allMovies, pageNum : props.totalPages};
         
     }
     componentDidMount(){
