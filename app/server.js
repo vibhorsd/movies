@@ -54,32 +54,37 @@ app.get("/fetch", (req, res) => {
         //console.log("movieList : " + JSON.stringify(movieList))
         if(!movieList){
             movieList = get_movies(pageNum);
+            var promise = serverCache.addKey(key,movieList);
         }
         
         res.send(movieList)
     });
 });
 app.use((req, res) => {
-    var movies = get_movies(1);
-    //console.log("Movies : " + JSON.stringify(movies))
-    
-    var markup = "<!DOCTYPE html>";
-    markup += "<html>";
-    markup += "<head>";
-    markup += "<title>Movies app</title>";
-    markup += "<link href='https://fonts.googleapis.com/css?";
-    markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
-    markup += "</head>";
-    markup += "<body>";
-    markup += "<div id=\"app\" class=\"container\">";
-    markup += ReactDOMServer.renderToString( < App allMovies={movies} /> );
-    markup += "</div>";
-    markup += "<script id=\"movie-data\">" + JSON.stringify(movies) + "</script>"
-    markup += "<script src=\"bundle.js\"></script>";
-    markup += "</body>";
-    markup += "</html>";
-    
-    res.send(markup);
+    var key = "page_1";
+    serverCache.getValue(key).then(function(movieList){
+        if(!movieList){
+            movieList = get_movies(1);
+            var promise = serverCache.addKey(key,movieList);
+        }
+        var markup = "<!DOCTYPE html>";
+        markup += "<html>";
+        markup += "<head>";
+        markup += "<title>Movies app</title>";
+        markup += "<link href='https://fonts.googleapis.com/css?";
+        markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
+        markup += "</head>";
+        markup += "<body>";
+        markup += "<div id=\"app\" class=\"container\">";
+        markup += ReactDOMServer.renderToString( < App allMovies={movieList} /> );
+        markup += "</div>";
+        markup += "<script id=\"movie-data\">" + JSON.stringify(movieList) + "</script>"
+        markup += "<script src=\"bundle.js\"></script>";
+        markup += "</body>";
+        markup += "</html>";
+        
+        res.send(markup);
+    });
 });
 
 const port = process.env.PORT || 3000;
