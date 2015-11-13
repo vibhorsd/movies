@@ -41,10 +41,10 @@ export default class Home extends React.Component {
                         }
                     </Dialog>
                 </Paper>
-                <ComponentGallery margin={10}
+                <ComponentGallery margin={4}
                     widthHeightRatio={4/3}
-                    targetWidth={250}
-                    initialComponentWidth={250}>
+                    targetWidth={190}
+                    initialComponentWidth={190}>
                     {this.generateTiles()}
                 </ComponentGallery>
             </Paper>

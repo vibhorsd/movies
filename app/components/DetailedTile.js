@@ -30,7 +30,7 @@ export default class DetailedTile extends React.Component {
                         <CardHeader
                             title={this.props.movie.title}
                             subtitle={releaseDate}
-                            avatar={(backdrop_path && backdrop_path.length > 0)?backdrop_path:(
+                            avatar={(backdrop_path && backdrop_path.length > 0 && backdrop_path.indexOf("null") === -1)?backdrop_path:(
                                 <Avatar>
                                     {this.props.movie.title.charAt(0)}
                                 </Avatar>

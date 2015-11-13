@@ -101,12 +101,14 @@ app.use((req, res) => {
             markup += "<title>Movies app</title>";
             markup += "<link href='https://fonts.googleapis.com/css?";
             markup += "family=Roboto:400,300,500' rel='stylesheet' type='text/css'>";
+            markup += "<link href=\"https://fonts.googleapis.com/icon?";
+            markup += "family=Material+Icons\" rel=\"stylesheet\">";
             markup += "</head>";
             markup += "<body>";
             markup += "<div id=\"app\" class=\"container\">";
             // disabled server side rendering because of https://github.com/callemall/material-ui/issues/2119
             // following can be uncommented if this issue gets fixed
-            markup += ReactDOMServer.renderToString( < App allMovies={movieList} totalPages={totalPages} /> );
+            // markup += ReactDOMServer.renderToString( < App allMovies={movieList} totalPages={totalPages} /> );
             markup += "</div>";
             markup += "<script id=\"movie-data\">" + JSON.stringify(movieList) + "</script>"
             markup += "<script id=\"total-pages-data\">" + totalPages + "</script>"
