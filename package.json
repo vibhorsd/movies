@@ -69,7 +69,7 @@
         "test"
     ],
     "browserify": {
-        "transform": ["react-component-gallery",
+        "transform": [
             "babelify"
         ]
     },
