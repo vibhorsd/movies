@@ -74,8 +74,8 @@ export default class App extends React.Component {
                                 nextLabel={">"}
                                 breakLabel={<li className="break"><a href="">...</a></li>}
                                 pageNum={this.state.pageNum}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
+                                marginPagesDisplayed={1}
+                                pageRangeDisplayed={2}
                                 clickCallback={this.fetchMovie}
                                 containerClassName={"pagination"}
                                 subContainerClassName={"pages pagination"}
