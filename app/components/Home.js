@@ -18,8 +18,11 @@ export default class Home extends React.Component {
     generateTiles() {
         var tiles = [], movies = this.props.allMovies;
         for (var key in movies) {
-            var boundClick = this.handleClick.bind(this,key);
-            tiles.push(<Tile movie={movies[key]} onClick={boundClick}></Tile>);
+            var movie = movies[key];
+            if(movie.poster_path != null){
+                var boundClick = this.handleClick.bind(this,key);
+                tiles.push(<Tile movie={movies[key]} onClick={boundClick}></Tile>);
+            }
         }
         return tiles;
     }
