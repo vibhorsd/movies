@@ -5,6 +5,7 @@ import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
+import {AppBar} from "material-ui";
 var $ = require ('jquery');
 
 injectTapEventPlugin();
@@ -47,6 +48,7 @@ export default class App extends React.Component {
     */
     render() {
         console.log("App render")
+        var logo = "/images/logo.png";
         return (
             <InlineCss stylesheet={`
                     #react-paginate ul {
@@ -63,20 +65,25 @@ export default class App extends React.Component {
                         cursor: default;
                     }
                     `}>
-                    <div id="react-paginate" >
-                        <ReactPaginate previousLabel={"previous"}
-                            nextLabel={"next"}
-                            breakLabel={<li className="break"><a href="">...</a></li>}
-                            pageNum={this.state.pageNum}
-                            marginPagesDisplayed={2}
-                            pageRangeDisplayed={5}
-                            clickCallback={this.fetchMovie}
-                            containerClassName={"pagination"}
-                            subContainerClassName={"pages pagination"}
-                            activeClassName={"active"} >
-                            
-                        </ReactPaginate>
-                    </div>
+                    <AppBar
+                        title="World of Movies"
+                        style={{margin: "0 0 3px 0"}}
+                        iconElementLeft={<img src={logo}/>}
+                        iconElementRight={<div id="react-paginate" >
+                            <ReactPaginate previousLabel={"<"}
+                                nextLabel={">"}
+                                breakLabel={<li className="break"><a href="">...</a></li>}
+                                pageNum={this.state.pageNum}
+                                marginPagesDisplayed={2}
+                                pageRangeDisplayed={5}
+                                clickCallback={this.fetchMovie}
+                                containerClassName={"pagination"}
+                                subContainerClassName={"pages pagination"}
+                                activeClassName={"active"} >
+                                
+                            </ReactPaginate>
+                        </div>}
+                        />
                     < Home allMovies={this.state.allMovies} />
                 
             </InlineCss>);
