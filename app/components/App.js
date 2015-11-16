@@ -67,7 +67,7 @@ export default class App extends React.Component {
                     `}>
                     <AppBar
                         title="World of Movies"
-                        style={{margin: "0 0 3px 0"}}
+                        style={{margin: "0 0 5px 0"}}
                         iconElementLeft={<img src={logo}/>}
                         iconElementRight={<div id="react-paginate" >
                             <ReactPaginate previousLabel={"<"}
