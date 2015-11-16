@@ -12,6 +12,7 @@ const app = express();
 
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
+app.use(express.static(path.join(path.resolve(__dirname, './'), 'static')));
 
 
 // Connecting server cache
