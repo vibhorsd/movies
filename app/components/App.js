@@ -73,7 +73,7 @@ export default class App extends React.Component {
                             <ReactPaginate previousLabel={"<"}
                                 nextLabel={">"}
                                 breakLabel={<li className="break"><a href="">...</a></li>}
-                                pageNum={this.state.pageNum}
+                                pageNum={parseInt(this.state.pageNum)}
                                 marginPagesDisplayed={2}
                                 pageRangeDisplayed={5}
                                 clickCallback={this.fetchMovie}
