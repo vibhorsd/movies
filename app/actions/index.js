@@ -1,5 +1,11 @@
 /**
 * Created by pushanmitra on 04/11/15.
 */
+import FetchMovieAction from "./FetchMovieAction";
+import SearchMovieAction from  "./SearchMovieAction"
 
-export {default as FetchMovieAction} from "./FetchMovieAction";
+
+export default {
+    FetchMovieAction,
+    SearchMovieAction
+};
