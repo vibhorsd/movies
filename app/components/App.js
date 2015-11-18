@@ -10,6 +10,8 @@ import Waypoint from "react-waypoint";
 
 var $ = require ('jquery');
 
+import SearchBar from "./SearchBar"
+
 injectTapEventPlugin();
 /*function getMovieState() {
 //var ml = MovieStore.getAll();
@@ -28,19 +30,45 @@ export default class App extends React.Component {
         this.boundLoadNextPage = this.loadNextPage.bind(this);
         this.boundWaypointEnter = this.waypointEnter.bind(this);
         this.boundWaypointExit = this.waypointExit.bind(this);
+        this.backup = null;
         this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1};
         
     }
     componentDidMount(){
         MovieStore.addChangeListener(this._onChange);
+        MovieStore.addSearchListner(this._onSearch.bind(this));
     }
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
     _onChange(movies, pageNum) {
-        console.log("_onChange...");
-        console.dir(movies);
+        this.backup = null;
         this.setState({allMovies: movies, currentPage: pageNum});
+    }
+    
+    _onSearch(value) {
+        console.info("Key reach App: " + value);
+        if(value.length > 0) {
+            var newObj = {}
+            for (var key in this.state.allMovies) {
+                var obj = this.state.allMovies[key];
+                if (obj.title && obj.title === value) {
+                    newObj[key] = obj;
+                }
+            }
+            
+            if (Object.keys(newObj).length > 0) {
+                this.backup = this.state.allMovies;
+                this.setState({allMovies: newObj});
+            }
+        }
+        else {
+            console.log("Will re render through backup");
+            if (this.backup) {
+                this.setState({allMovies: this.backup});
+            }
+            
+        }
     }
     
     fetchMovie(pageNumber) {
@@ -59,22 +87,41 @@ export default class App extends React.Component {
     }
     waypointExit() {
     }
+    _getMovieTitles () {
+        var titles = [];
+        for(var key in this.state.allMovies) {
+            
+            var obj = this.state.allMovies[key];
+            if (obj.title){
+                titles.push(obj.title);
+            }
+        }
+        return titles;
+    }
     /**
     * render
     * @return {XML} markup
     */
     render() {
-        console.log("App render")
         var logo = "/images/logo.png";
         return (
             <Paper zDepth={0}>
-            <Home allMovies={this.state.allMovies}/>
-            <Waypoint
-            onEnter={this.boundWaypointEnter}
-            onLeave={this.boundWaypointExit}
-            threshold={0.2}/>
-            </Paper>
-        );
+                <AppBar
+                    title="World of Movies"
+                    style={{margin: "0 0 5px 0"}}
+                    iconElementLeft={
+                        <div>
+                            <SearchBar suggestions={this._getMovieTitles()}/>
+                        </div>
+                    }/>
+                    <Home allMovies={this.state.allMovies}/>
+                    <Waypoint
+                        onEnter={this.boundWaypointEnter}
+                        onLeave={this.boundWaypointExit}
+                        threshold={0.2}/>
+                </Paper>
+            );
+        }
+        
     }
     
-}

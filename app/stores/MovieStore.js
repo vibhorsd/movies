@@ -25,7 +25,10 @@ class MovieStore extends EventEmitter {
                 // console.log("Movies list: " + JSON.stringify(movies))
                 //this.emitChange();
                 break;
-                
+                case AppConst.ActionTypes.MOVIE_SEARCH :
+                    var input = action.key;
+                    this.searchMovies(input);
+                    break;
                 default:
                 // no op
             }
@@ -60,11 +63,19 @@ class MovieStore extends EventEmitter {
     emitChange(pageNum) {
         this.emit(CHANGE_EVENT, window.movies, pageNum);
     }
+
+    searchMovies(key){
+        this.emit(AppConst.StoreEvents.MOVIE_SEARCH, key);
+    }
     /**
     * @param {function} callback
     */
     addChangeListener(callback) {
         this.on(CHANGE_EVENT, callback);
+    }
+
+    addSearchListner(callback){
+        this.on(AppConst.StoreEvents.MOVIE_SEARCH, callback);
     }
     
 }
