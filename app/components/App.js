@@ -6,6 +6,8 @@ import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
 import {Paper, AppBar, FlatButton} from "material-ui";
+import Waypoint from "react-waypoint";
+
 var $ = require ('jquery');
 
 injectTapEventPlugin();
@@ -24,6 +26,8 @@ export default class App extends React.Component {
         super(props);
         this._onChange = this._onChange.bind(this);
         this.boundLoadNextPage = this.loadNextPage.bind(this);
+        this.boundWaypointEnter = this.waypointEnter.bind(this);
+        this.boundWaypointExit = this.waypointExit.bind(this);
         this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1};
         
     }
@@ -50,6 +54,11 @@ export default class App extends React.Component {
             MovieFetchAction.fetch(nextPage);
         }
     }
+    waypointEnter() {
+        this.loadNextPage();
+    }
+    waypointExit() {
+    }
     /**
     * render
     * @return {XML} markup
@@ -60,7 +69,10 @@ export default class App extends React.Component {
         return (
             <Paper zDepth={0}>
             <Home allMovies={this.state.allMovies}/>
-            <FlatButton label="More..." onClick={this.boundLoadNextPage}/>
+            <Waypoint
+            onEnter={this.boundWaypointEnter}
+            onLeave={this.boundWaypointExit}
+            threshold={0.2}/>
             </Paper>
         );
     }

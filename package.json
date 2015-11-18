@@ -48,6 +48,7 @@
         "react-inline-css": "2.0.0",
         "react-paginate": "0.4.0",
         "react-tap-event-plugin": "0.2.1",
+        "react-waypoint": "^1.1.2",
         "redis": "2.3.0",
         "superagent": "1.4.0",
         "sync-request": "2.1.0"
@@ -79,7 +80,8 @@
             "node_modules/react",
             "<rootDir>/node_module/q",
             "<rootDir>/node_module/keymirror",
-            "node_module/async"
+            "node_module/async",
+            "node_modules/material-ui"
         ]
     }
 }
