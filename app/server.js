@@ -59,6 +59,7 @@ app.get("/fetch", (req, res) => {
     //console.dir(req.params)
     var pageNum = req.param('page_num');
     var key = "page_" + pageNum;
+    
     serverCache.getValue(key).then(function(movieList){
         //console.log("movieList : " + JSON.stringify(movieList))
         if(movieList == null){
@@ -79,7 +80,6 @@ app.use((req, res) => {
     var key = "page_1";
     var totalPageKey = "total_pages";
     var totalPages = 1;
-    serverCache.removeKey(key);
     serverCache.getValue(key).then(function(movieList){
         serverCache.getValue(totalPageKey).then(function(totalPages){
             if(movieList == null){
