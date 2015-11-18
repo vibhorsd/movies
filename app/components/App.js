@@ -5,7 +5,9 @@ import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
-import {AppBar} from "material-ui";
+import {Paper, AppBar, FlatButton} from "material-ui";
+import Waypoint from "react-waypoint";
+
 var $ = require ('jquery');
 
 import SearchBar from "./SearchBar"
@@ -25,8 +27,11 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this._onChange = this._onChange.bind(this);
+        this.boundLoadNextPage = this.loadNextPage.bind(this);
+        this.boundWaypointEnter = this.waypointEnter.bind(this);
+        this.boundWaypointExit = this.waypointExit.bind(this);
         this.backup = null;
-        this.state = {allMovies : props.allMovies, pageNum : parseInt(props.totalPages)};
+        this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1};
         
     }
     componentDidMount(){
@@ -36,12 +41,11 @@ export default class App extends React.Component {
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
-    _onChange(movies) {
-        console.log("_onChange...");
+    _onChange(movies, pageNum) {
         this.backup = null;
-        this.setState({allMovies: movies});
+        this.setState({allMovies: movies, currentPage: pageNum});
     }
-
+    
     _onSearch(value) {
         console.info("Key reach App: " + value);
         if(value.length > 0) {
@@ -52,7 +56,7 @@ export default class App extends React.Component {
                     newObj[key] = obj;
                 }
             }
-
+            
             if (Object.keys(newObj).length > 0) {
                 this.backup = this.state.allMovies;
                 this.setState({allMovies: newObj});
@@ -63,7 +67,7 @@ export default class App extends React.Component {
             if (this.backup) {
                 this.setState({allMovies: this.backup});
             }
-
+            
         }
     }
     
@@ -72,11 +76,21 @@ export default class App extends React.Component {
         var pageNumber = pageNumber.selected + 1;
         MovieFetchAction.fetch(pageNumber);
     }
-
+    loadNextPage() {
+        if (this.state.currentPage < this.state.totalPages) {
+            var nextPage = this.state.currentPage + 1;
+            MovieFetchAction.fetch(nextPage);
+        }
+    }
+    waypointEnter() {
+        this.loadNextPage();
+    }
+    waypointExit() {
+    }
     _getMovieTitles () {
         var titles = [];
         for(var key in this.state.allMovies) {
-
+            
             var obj = this.state.allMovies[key];
             if (obj.title){
                 titles.push(obj.title);
@@ -89,50 +103,24 @@ export default class App extends React.Component {
     * @return {XML} markup
     */
     render() {
-        console.log("App render")
         var logo = "/images/logo.png";
         return (
-            <InlineCss stylesheet={`
-                    #react-paginate ul {
-                        display: inline-block;
-                        padding-left: 15px;
-                        padding-right: 15px;
-                    }
-                    #react-paginate li {
-                        padding: 5px;
-                        display: inline-block;
-                    }
-                    
-                    #react-paginate .break a {
-                        cursor: default;
-                    }
-                    `}>
-                    <AppBar
-                        title="World of Movies"
-                        style={{margin: "0 0 5px 0"}}
-                        iconElementLeft={
-                            <div>
+            <Paper zDepth={0}>
+                <AppBar
+                    title="World of Movies"
+                    style={{margin: "0 0 5px 0"}}
+                    iconElementLeft={
+                        <div>
                             <SearchBar suggestions={this._getMovieTitles()}/>
-                            </div>
-                        }
-                        iconElementRight={<div id="react-paginate" >
-                            <ReactPaginate previousLabel={"<"}
-                                nextLabel={">"}
-                                breakLabel={<li className="break"><a href="">...</a></li>}
-                                pageNum={this.state.pageNum}
-                                marginPagesDisplayed={1}
-                                pageRangeDisplayed={2}
-                                clickCallback={this.fetchMovie}
-                                containerClassName={"pagination"}
-                                subContainerClassName={"pages pagination"}
-                                activeClassName={"active"} >
-                                
-                            </ReactPaginate>
-                        </div>}
-                        />
-                    < Home allMovies={this.state.allMovies} />
-                
-            </InlineCss>);
+                        </div>
+                    }/>
+                    <Home allMovies={this.state.allMovies}/>
+                    <Waypoint
+                        onEnter={this.boundWaypointEnter}
+                        onLeave={this.boundWaypointExit}
+                        threshold={0.2}/>
+                </Paper>
+            );
         }
         
     }
