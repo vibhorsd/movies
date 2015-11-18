@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
-import {Paper, AppBar, FlatButton} from "material-ui";
+import {Paper, AppBar, FlatButton, CircularProgress} from "material-ui";
 import Waypoint from "react-waypoint";
 
 var $ = require ('jquery');
@@ -31,7 +31,7 @@ export default class App extends React.Component {
         this.boundWaypointEnter = this.waypointEnter.bind(this);
         this.boundWaypointExit = this.waypointExit.bind(this);
         this.backup = null;
-        this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1};
+        this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1, showLoading: false};
         
     }
     componentDidMount(){
@@ -43,7 +43,7 @@ export default class App extends React.Component {
     }
     _onChange(movies, pageNum) {
         this.backup = null;
-        this.setState({allMovies: movies, currentPage: pageNum});
+        this.setState({allMovies: movies, currentPage: pageNum, showLoading: false});
     }
     
     _onSearch(value) {
@@ -79,6 +79,7 @@ export default class App extends React.Component {
     loadNextPage() {
         if (this.state.currentPage < this.state.totalPages) {
             var nextPage = this.state.currentPage + 1;
+            this.setState({showLoading: true});
             MovieFetchAction.fetch(nextPage);
         }
     }
@@ -118,7 +119,12 @@ export default class App extends React.Component {
                     <Waypoint
                         onEnter={this.boundWaypointEnter}
                         onLeave={this.boundWaypointExit}
-                        threshold={0.2}/>
+                        threshold={0.1}/>
+                    {this.state.showLoading?(
+                        <div style={{textAlign: "center"}}>
+                            <CircularProgress mode="indeterminate" size={0.5}/>
+                        </div>
+                    ):null}
                 </Paper>
             );
         }
