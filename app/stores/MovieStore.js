@@ -9,21 +9,20 @@ var $ = require ('jquery');
 
 var CHANGE_EVENT = 'change';
 
-var movies = []; // collection of movies
+// var movies = []; // collection of movies
 
 
 class MovieStore extends EventEmitter {
     
     constructor(){
         super();
-        this.movies = [];
         AppDispatcher.register((action)=> {
             console.log(" Dispatcher action Type : " + action.actionType)
             switch(action.actionType) {
                 case "GET":
                 var page = action.page;
-                movies = this.update(page);
-                console.log("Movies list: " + JSON.stringify(movies))
+                this.update(page);
+                // console.log("Movies list: " + JSON.stringify(movies))
                 //this.emitChange();
                 break;
                 
@@ -42,9 +41,12 @@ class MovieStore extends EventEmitter {
             url: url,
             success: function(movieList) {
                 console.log("succes & setstate : " )
-                //console.dir(movieList)
-                self.movies = movieList;
-                self.emitChange();
+                console.dir(movieList);
+                for (var idx in movieList) {
+                    window.movies.push(movieList[idx]);
+                }
+                console.dir(window.movies);
+                self.emitChange(pageNum);
             },
             error: function(xhr, status, err) {
                 console.error("/fetch", status, err.toString());
@@ -53,10 +55,10 @@ class MovieStore extends EventEmitter {
     }
     
     getAllMovie() {
-        return this.movies;
+        return window.movies;
     }
-    emitChange() {
-        this.emit(CHANGE_EVENT, this.movies);
+    emitChange(pageNum) {
+        this.emit(CHANGE_EVENT, window.movies, pageNum);
     }
     /**
     * @param {function} callback

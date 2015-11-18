@@ -5,7 +5,7 @@ import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
-import {AppBar} from "material-ui";
+import {Paper, AppBar, FlatButton} from "material-ui";
 var $ = require ('jquery');
 
 injectTapEventPlugin();
@@ -23,7 +23,8 @@ export default class App extends React.Component {
     constructor(props) {
         super(props);
         this._onChange = this._onChange.bind(this);
-        this.state = {allMovies : props.allMovies, pageNum : parseInt(props.totalPages)};
+        this.boundLoadNextPage = this.loadNextPage.bind(this);
+        this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1};
         
     }
     componentDidMount(){
@@ -32,15 +33,22 @@ export default class App extends React.Component {
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
-    _onChange(movies) {
-        console.log("_onChange...")
-        this.setState({allMovies: movies});
+    _onChange(movies, pageNum) {
+        console.log("_onChange...");
+        console.dir(movies);
+        this.setState({allMovies: movies, currentPage: pageNum});
     }
     
     fetchMovie(pageNumber) {
         console.log("fetchMovie ")
         var pageNumber = pageNumber.selected + 1;
         MovieFetchAction.fetch(pageNumber);
+    }
+    loadNextPage() {
+        if (this.state.currentPage < this.state.totalPages) {
+            var nextPage = this.state.currentPage + 1;
+            MovieFetchAction.fetch(nextPage);
+        }
     }
     /**
     * render
@@ -50,44 +58,11 @@ export default class App extends React.Component {
         console.log("App render")
         var logo = "/images/logo.png";
         return (
-            <InlineCss stylesheet={`
-                    #react-paginate ul {
-                        display: inline-block;
-                        padding-left: 15px;
-                        padding-right: 15px;
-                    }
-                    #react-paginate li {
-                        padding: 5px;
-                        display: inline-block;
-                    }
-                    
-                    #react-paginate .break a {
-                        cursor: default;
-                    }
-                    `}>
-                    <AppBar
-                        title="World of Movies"
-                        style={{margin: "0 0 5px 0"}}
-                        iconElementLeft={<img src={logo}/>}
-                        iconElementRight={<div id="react-paginate" >
-                            <ReactPaginate previousLabel={"<"}
-                                nextLabel={">"}
-                                breakLabel={<li className="break"><a href="">...</a></li>}
-                                pageNum={parseInt(this.state.pageNum)}
-                                marginPagesDisplayed={2}
-                                pageRangeDisplayed={5}
-                                clickCallback={this.fetchMovie}
-                                containerClassName={"pagination"}
-                                subContainerClassName={"pages pagination"}
-                                activeClassName={"active"} >
-                                
-                            </ReactPaginate>
-                        </div>}
-                        />
-                    < Home allMovies={this.state.allMovies} />
-                
-            </InlineCss>);
-        }
-        
+            <Paper zDepth={0}>
+            <Home allMovies={this.state.allMovies}/>
+            <FlatButton label="More..." onClick={this.boundLoadNextPage}/>
+            </Paper>
+        );
     }
     
+}
