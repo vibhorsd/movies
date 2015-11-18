@@ -19,3 +19,5 @@ movies:
         - redis
 redis:
     image: redis:3.0.5
+    ports:
+        - "6379:6379"
