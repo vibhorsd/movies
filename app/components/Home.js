@@ -12,8 +12,8 @@ export default class Home extends React.Component {
         this.state = {selectedKey: null};
     }
     handleClick(key) {
-        //this.setState({selectedKey: key});
-        //this.refs.movieDialog.setState({open: true});
+        this.setState({selectedKey: key});
+        this.refs.movieDialog.setState({open: true});
     }
     generateTiles() {
         var tiles = [], movies = this.props.allMovies;
