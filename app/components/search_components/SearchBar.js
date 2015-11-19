@@ -62,7 +62,10 @@ var SearchBar = _react2['default'].createClass({
 
     clearTimeout(this._timerId);
     var input = e.target.value;
-    if (!input) return this.setState(this.getInitialState());
+    if (!input) {
+      _this.props.onClear();
+      return this.setState(this.getInitialState());
+    }
     this.setState({ value: input });
 
     this._timerId = setTimeout(function () {

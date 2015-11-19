@@ -14,7 +14,8 @@ var keyMirror = function(obj) {
 };
 const ActionTypes = keyMirror({
     MOVIE_FETCH : null,
-    MOVIE_SEARCH: null
+    MOVIE_SEARCH: null,
+    MOVIE_SEARCH_CLEAR: null
 });
 
 const StoreEvents = keyMirror({

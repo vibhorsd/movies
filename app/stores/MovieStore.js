@@ -29,6 +29,9 @@ class MovieStore extends EventEmitter {
                     var input = action.key;
                     this.searchMovies(input);
                     break;
+                case AppConst.ActionTypes.MOVIE_SEARCH_CLEAR:
+                    this.searchMovies("");
+                    break;
                 default:
                 // no op
             }
