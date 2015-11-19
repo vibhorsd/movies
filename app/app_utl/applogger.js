@@ -1,9 +1,8 @@
 /**
- * Created by pushanmitra on 10/11/15.
- */
+* Created by pushanmitra on 10/11/15.
+*/
 import winston from "winston"
 
-//console.log("hi");
 winston.loggers.add('default', {
     console: {
         colorize: true,

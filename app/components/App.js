@@ -5,12 +5,13 @@ import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
 import InlineCss from "react-inline-css";
-import {Paper, AppBar, FlatButton, CircularProgress} from "material-ui";
+import {Paper, AppBar, FlatButton, CircularProgress, TextField, FontIcon} from "material-ui";
 import Waypoint from "react-waypoint";
 
 var $ = require ('jquery');
 
-import SearchBar from "./SearchBar"
+import SearchBar from "./SearchBar";
+import SearchMovieAction from "../actions/SearchMovieAction";
 
 injectTapEventPlugin();
 /*function getMovieState() {
@@ -49,7 +50,7 @@ export default class App extends React.Component {
             return false;
         }
     }
-
+    
     _onChange(change) {
         if (this._validateState(change)){
             this.setState(change);
@@ -88,32 +89,51 @@ export default class App extends React.Component {
         }
         return titles;
     }
+    onSearch(event) {
+        var text = event.target.value;
+        if (text && (text.length > 0)) {
+            SearchMovieAction.search(text);
+        } else {
+            SearchMovieAction.clear();
+        }
+    }
     /**
     * render
     * @return {XML} markup
     */
     render() {
+        console.log("App change currentPage = " + this.state.currentPage + ", totalPages = " + this.state.totalPages);
+        
         var logo = "/images/logo.png";
         return (
             <Paper zDepth={0}>
-            <AppBar
-            title="World of Movies"
-            style={{margin: "0 0 5px 0"}}
-            iconElementLeft={
-                <div>
-                <SearchBar suggestions={this._getMovieTitles()}/>
-                </div>
-            }/>
-            <Home allMovies={this.state.allMovies}/>
-            <Waypoint
-            onEnter={this.boundWaypointEnter}
-            onLeave={this.boundWaypointExit}
-            threshold={0.1}/>
-            {this.state.showLoading?(
-                <div style={{textAlign: "center"}}>
-                <CircularProgress mode="indeterminate" size={0.5}/>
-                </div>
-            ):null}
+                <AppBar
+                    style={{margin: "0 0 5px 0"}}
+                    iconElementRight={
+                        <div>
+                            <TextField
+                                hintText="Search for a movie"
+                                onChange={this.onSearch.bind(this)}
+                                hintStyle={{color: "white"}}
+                                inputStyle={{color: "white"}}/>
+                        </div>
+                    }
+                    iconElementLeft={<img src="/images/logo.png"/>}
+                    />
+                <Home allMovies={this.state.allMovies}/>
+                {this.state.search?null:
+                    (
+                        <Waypoint
+                            onEnter={this.boundWaypointEnter}
+                            onLeave={this.boundWaypointExit}
+                            threshold={0.1}/>
+                    )
+                }
+                {this.state.showLoading?(
+                    <div style={{textAlign: "center"}}>
+                        <CircularProgress mode="indeterminate" size={0.5}/>
+                    </div>
+                ):null}
             </Paper>
         );
     }
