@@ -13,7 +13,6 @@ var CHANGE_EVENT = 'change';
 
 
 class MovieStore extends EventEmitter {
-    
     constructor(){
         super();
         this.searchText = null;
@@ -40,6 +39,13 @@ class MovieStore extends EventEmitter {
         });
         
     }
+
+    set initial(obj){
+        window.movies = obj.movies;
+        this.totalPages = obj.totalPages;
+        this.currentPage = obj.currentPage;
+    }
+
     update(pageNum){
         var self = this;
         console.log("ajax call to update")
@@ -53,7 +59,8 @@ class MovieStore extends EventEmitter {
                     window.movies.push(movieList[idx]);
                 }
                 console.dir(window.movies);
-                self.emitChange({pageNumber:pageNum});
+                this.currentPage = pageNum;
+                self.emitChange({showLoading: false});
             },
             error: function(xhr, status, err) {
                 console.error("/fetch", status, err.toString());
@@ -80,10 +87,13 @@ class MovieStore extends EventEmitter {
     emitChange(change) {
         
         var movies = this.getAllMovie();
-        change.movies = movies;
+        change.allMovies = movies;
         if (this.searchText) {
             change.search = true;
         }
+        change.totalPages = this.totalPages;
+        change.currentPage = this.currentPage;
+
         this.emit(CHANGE_EVENT, change);
     }
 
@@ -93,7 +103,7 @@ class MovieStore extends EventEmitter {
         }
         else
             this.searchText = null;
-        this.emitChange({});
+        this.emitChange({showLoading:true});
     }
     /**
     * @param {function} callback
