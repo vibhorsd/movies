@@ -42,53 +42,14 @@ export default class App extends React.Component {
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
-    _onChange(movies, pageNum) {
-        this.backup = null;
-        this.setState({allMovies: movies, currentPage: pageNum, showLoading: false});
+    _onChange(change) {
+        var movies = change.movies;
+        var pageNum = change.pageNumber;
+        var search = change.search;
+        this.setState({allMovies: movies, currentPage: pageNum, showLoading: false, search: search});
     }
     
     _onSearch(value) {
-        console.info("Key reach App: " + value + ", serach key:" + this.searchKey);
-        if(value.length > 0) {
-            var newObj = {}
-            if (this.searchKey === value)
-            {
-                console.info("Wrong");
-                return;
-            }
-
-            var storeMovie = (movies) => {
-                for (var key in movies) {
-                    var obj = movies[key];
-                    if (obj.title && obj.title.match(new RegExp('^' + value.replace(/\W\s/g, ''), 'i'))) {
-                        newObj[key] = obj;
-                    }
-                }
-                if (Object.keys(newObj).length > 0) {
-
-                    this.setState({allMovies: newObj});
-                }
-            };
-
-            if (this.searchKey && this.searchKey.length < value.length) {
-                storeMovie(this.state.allMovies);
-            }
-            else {
-                var movies = MovieStore.getAllMovie();
-                storeMovie(movies);
-            }
-            this.searchKey = value;
-
-        }
-        else {
-            console.log("Clear");
-            this.searchKey = null;
-            this.setState({allMovies:MovieStore.getAllMovie()});
-            /*if (this.backup) {
-                this.setState({allMovies: this.backup});
-            }*/
-            
-        }
     }
 
     

@@ -16,6 +16,7 @@ class MovieStore extends EventEmitter {
     
     constructor(){
         super();
+        this.searchText = null;
         AppDispatcher.register((action)=> {
             console.log(" Dispatcher action Type : " + action.actionType)
             switch(action.actionType) {
@@ -52,7 +53,7 @@ class MovieStore extends EventEmitter {
                     window.movies.push(movieList[idx]);
                 }
                 console.dir(window.movies);
-                self.emitChange(pageNum);
+                self.emitChange({pageNumber:pageNum});
             },
             error: function(xhr, status, err) {
                 console.error("/fetch", status, err.toString());
@@ -61,14 +62,38 @@ class MovieStore extends EventEmitter {
     }
     
     getAllMovie() {
-        return window.movies;
+        if (this.searchText) {
+            var movies;
+            movies = window.movies.filter((movie)=>{
+                return movie.title.match(new RegExp('^' + this.searchText.replace(/\W\s/g, ''), 'i'))})
+
+            if (movies.length > 0) {
+                return movies;
+            }
+            else {
+                return window.movies;
+            }
+        }
+        else
+            return window.movies;
     }
-    emitChange(pageNum) {
-        this.emit(CHANGE_EVENT, window.movies, pageNum);
+    emitChange(change) {
+        
+        var movies = this.getAllMovie();
+        change.movies = movies;
+        if (this.searchText) {
+            change.search = true;
+        }
+        this.emit(CHANGE_EVENT, change);
     }
 
     searchMovies(key){
-        this.emit(AppConst.StoreEvents.MOVIE_SEARCH, key);
+        if (key.length > 0) {
+            this.searchText = key;
+        }
+        else
+            this.searchText = null;
+        this.emitChange({});
     }
     /**
     * @param {function} callback
