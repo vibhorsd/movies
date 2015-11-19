@@ -41,11 +41,19 @@ export default class App extends React.Component {
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
+    _validateState(obj){
+        if (obj.allMovies && obj.totalPages) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
     _onChange(change) {
-        var movies = change.movies;
-        var pageNum = change.pageNumber;
-        var search = change.search;
-        this.setState({allMovies: movies, currentPage: pageNum, showLoading: false, search: search});
+        if (this._validateState(change)){
+            this.setState(change);
+        }
     }
     
     _onSearch(value) {
