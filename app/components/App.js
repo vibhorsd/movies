@@ -32,8 +32,7 @@ export default class App extends React.Component {
         this.boundWaypointExit = this.waypointExit.bind(this);
         this.backup = null;
         this.searchKey = null;
-        this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1, showLoading: false};
-        
+        this.state = {allMovies : props.allMovies?props.allMovies:MovieStore.getAllMovie(), totalPages : parseInt(props.totalPages), currentPage: 1, showLoading: false};
     }
     componentDidMount(){
         MovieStore.addChangeListener(this._onChange);
@@ -51,7 +50,7 @@ export default class App extends React.Component {
     
     _onSearch(value) {
     }
-
+    
     
     fetchMovie(pageNumber) {
         console.log("fetchMovie ")
@@ -89,27 +88,26 @@ export default class App extends React.Component {
         var logo = "/images/logo.png";
         return (
             <Paper zDepth={0}>
-                <AppBar
-                    title="World of Movies"
-                    style={{margin: "0 0 5px 0"}}
-                    iconElementLeft={
-                        <div>
-                            <SearchBar suggestions={this._getMovieTitles()}/>
-                        </div>
-                    }/>
-                    <Home allMovies={this.state.allMovies}/>
-                    <Waypoint
-                        onEnter={this.boundWaypointEnter}
-                        onLeave={this.boundWaypointExit}
-                        threshold={0.1}/>
-                    {this.state.showLoading?(
-                        <div style={{textAlign: "center"}}>
-                            <CircularProgress mode="indeterminate" size={0.5}/>
-                        </div>
-                    ):null}
-                </Paper>
-            );
-        }
-        
+            <AppBar
+            title="World of Movies"
+            style={{margin: "0 0 5px 0"}}
+            iconElementLeft={
+                <div>
+                <SearchBar suggestions={this._getMovieTitles()}/>
+                </div>
+            }/>
+            <Home allMovies={this.state.allMovies}/>
+            <Waypoint
+            onEnter={this.boundWaypointEnter}
+            onLeave={this.boundWaypointExit}
+            threshold={0.1}/>
+            {this.state.showLoading?(
+                <div style={{textAlign: "center"}}>
+                <CircularProgress mode="indeterminate" size={0.5}/>
+                </div>
+            ):null}
+            </Paper>
+        );
     }
     
+}
