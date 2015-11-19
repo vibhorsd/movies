@@ -12,6 +12,11 @@ class SearchMovieAction {
             key: input
         });
     }
+    clear(){
+        AppDispatcher.dispatch({
+            actionType:Const.ActionTypes.MOVIE_SEARCH_CLEAR
+        });
+    }
 }
 
 export default new SearchMovieAction();

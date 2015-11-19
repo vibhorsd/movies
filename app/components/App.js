@@ -31,6 +31,7 @@ export default class App extends React.Component {
         this.boundWaypointEnter = this.waypointEnter.bind(this);
         this.boundWaypointExit = this.waypointExit.bind(this);
         this.backup = null;
+        this.searchKey = null;
         this.state = {allMovies : props.allMovies, totalPages : parseInt(props.totalPages), currentPage: 1, showLoading: false};
         
     }
@@ -47,29 +48,49 @@ export default class App extends React.Component {
     }
     
     _onSearch(value) {
-        console.info("Key reach App: " + value);
+        console.info("Key reach App: " + value + ", serach key:" + this.searchKey);
         if(value.length > 0) {
             var newObj = {}
-            for (var key in this.state.allMovies) {
-                var obj = this.state.allMovies[key];
-                if (obj.title && obj.title === value) {
-                    newObj[key] = obj;
+            if (this.searchKey === value)
+            {
+                console.info("Wrong");
+                return;
+            }
+
+            var storeMovie = (movies) => {
+                for (var key in movies) {
+                    var obj = movies[key];
+                    if (obj.title && obj.title.match(new RegExp('^' + value.replace(/\W\s/g, ''), 'i'))) {
+                        newObj[key] = obj;
+                    }
                 }
+                if (Object.keys(newObj).length > 0) {
+
+                    this.setState({allMovies: newObj});
+                }
+            };
+
+            if (this.searchKey && this.searchKey.length < value.length) {
+                storeMovie(this.state.allMovies);
             }
-            
-            if (Object.keys(newObj).length > 0) {
-                this.backup = this.state.allMovies;
-                this.setState({allMovies: newObj});
+            else {
+                var movies = MovieStore.getAllMovie();
+                storeMovie(movies);
             }
+            this.searchKey = value;
+
         }
         else {
-            console.log("Will re render through backup");
-            if (this.backup) {
+            console.log("Clear");
+            this.searchKey = null;
+            this.setState({allMovies:MovieStore.getAllMovie()});
+            /*if (this.backup) {
                 this.setState({allMovies: this.backup});
-            }
+            }*/
             
         }
     }
+
     
     fetchMovie(pageNumber) {
         console.log("fetchMovie ")
