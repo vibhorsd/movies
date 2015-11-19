@@ -45,8 +45,9 @@ export default class App extends React.Component {
         if (obj.allMovies && obj.totalPages) {
             return true;
         }
-        else
+        else {
             return false;
+        }
     }
 
     _onChange(change) {
