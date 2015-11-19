@@ -2,7 +2,7 @@ import React from "react";
 import Tile from "./Tile";
 import DetailedTile from "./DetailedTile";
 import ComponentGallery from "react-component-gallery";
-import {Paper, Dialog} from "material-ui";
+import {Paper, Dialog, FlatButton} from "material-ui";
 /**
 * Home page component
 */
@@ -12,8 +12,8 @@ export default class Home extends React.Component {
         this.state = {selectedKey: null};
     }
     handleClick(key) {
-        this.setState({selectedKey: key});
-        this.refs.movieDialog.setState({open: true});
+        //this.setState({selectedKey: key});
+        //this.refs.movieDialog.setState({open: true});
     }
     generateTiles() {
         var tiles = [], movies = this.props.allMovies;

@@ -13,7 +13,13 @@ var keyMirror = function(obj) {
     return ret;
 };
 const ActionTypes = keyMirror({
-    MOVIE_FETCH : null
+    MOVIE_FETCH : null,
+    MOVIE_SEARCH: null,
+    MOVIE_SEARCH_CLEAR: null
+});
+
+const StoreEvents = keyMirror({
+    MOVIE_SEARCH: null
 });
 
 const ServerCacheError = {
@@ -36,5 +42,5 @@ const IMDB_IMG_BASE_URL = "http://image.tmdb.org/t/p/";
 
 const SERVER_CACHE_EXPIRY = 24 * 60 * 60; //One day
 export default {
-    ActionTypes, IMDB_API_KEY, IMDB_BASE_URL, IMDB_IMG_BASE_URL,ServerCacheError, SERVER_CACHE_EXPIRY
+    ActionTypes, IMDB_API_KEY, IMDB_BASE_URL, IMDB_IMG_BASE_URL,ServerCacheError, SERVER_CACHE_EXPIRY, StoreEvents
 };

@@ -14,7 +14,7 @@ export default class Tile extends React.Component {
     render() {
         var poster_path = AppConst.IMDB_IMG_BASE_URL + "w500/" + this.props.movie.poster_path;
         // var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.movie.backdrop_path;
-        var releaseDate = (new Date(this.props.movie.release_date)).toDateString();
+        // var releaseDate = (new Date(this.props.movie.release_date)).toDateString();
         return (
             <Paper zDepth={1} onClick={this.props.onClick}>
                 <Card>
