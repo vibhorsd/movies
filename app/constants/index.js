@@ -30,6 +30,12 @@ const ServerCacheError = {
     
 };
 
+const ClientCacheError = {
+    DB_LOAD_ERROR: 21,
+    NOT_CONNECTED : 22,
+    TRANSACTION_FAILED: 23
+};
+
 const IMDB_API_KEY = "541f4bed734234b7ec445338523c49fe";
 const IMDB_BASE_URL = "http://api.themoviedb.org/3/";
 const IMDB_IMG_BASE_URL = "http://image.tmdb.org/t/p/";
