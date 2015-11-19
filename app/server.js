@@ -10,6 +10,13 @@ import app_utl from "./app_utl"
 
 const app = express();
 
+app.use(function(req, res, next) {
+    GLOBAL.navigator = {
+        userAgent: req.headers['user-agent']
+    };
+    next();
+});
+
 app.use(express.static(path.resolve(__dirname, "..", "dist")));
 app.get("/favicon.ico", (req, res) => res.send(""));
 app.use(express.static(path.join(path.resolve(__dirname, './'), 'static')));
@@ -107,9 +114,7 @@ app.use((req, res) => {
             markup += "</head>";
             markup += "<body>";
             markup += "<div id=\"app\" class=\"container\">";
-            // disabled server side rendering because of https://github.com/callemall/material-ui/issues/2119
-            // following can be uncommented if this issue gets fixed
-            // markup += ReactDOMServer.renderToString( < App allMovies={movieList} totalPages={totalPages} /> );
+            markup += ReactDOMServer.renderToString( < App allMovies={movieList} totalPages={totalPages} /> );
             markup += "</div>";
             markup += "<script id=\"movie-data\">" + JSON.stringify(movieList) + "</script>"
             markup += "<script id=\"total-pages-data\">" + totalPages + "</script>"
