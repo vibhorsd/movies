@@ -31,8 +31,8 @@ export default class App extends React.Component {
         this.boundWaypointEnter = this.waypointEnter.bind(this);
         this.boundWaypointExit = this.waypointExit.bind(this);
         this.backup = null;
+        this.searchKey = null;
         this.state = {allMovies : props.allMovies?props.allMovies:MovieStore.getAllMovie(), totalPages : parseInt(props.totalPages), currentPage: 1, showLoading: false};
-        
     }
     componentDidMount(){
         MovieStore.addChangeListener(this._onChange);
@@ -41,35 +41,16 @@ export default class App extends React.Component {
     componentWillUnMount() {
         MovieStore.removeChangeListener(this._onChange);
     }
-    _onChange(movies, pageNum) {
-        this.backup = null;
-        this.setState({allMovies: movies, currentPage: pageNum, showLoading: false});
+    _onChange(change) {
+        var movies = change.movies;
+        var pageNum = change.pageNumber;
+        var search = change.search;
+        this.setState({allMovies: movies, currentPage: pageNum, showLoading: false, search: search});
     }
     
     _onSearch(value) {
-        console.info("Key reach App: " + value);
-        if(value.length > 0) {
-            var newObj = {}
-            for (var key in this.state.allMovies) {
-                var obj = this.state.allMovies[key];
-                if (obj.title && obj.title === value) {
-                    newObj[key] = obj;
-                }
-            }
-            
-            if (Object.keys(newObj).length > 0) {
-                this.backup = this.state.allMovies;
-                this.setState({allMovies: newObj});
-            }
-        }
-        else {
-            console.log("Will re render through backup");
-            if (this.backup) {
-                this.setState({allMovies: this.backup});
-            }
-            
-        }
     }
+    
     
     fetchMovie(pageNumber) {
         console.log("fetchMovie ")

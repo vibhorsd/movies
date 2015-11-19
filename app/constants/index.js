@@ -14,7 +14,8 @@ var keyMirror = function(obj) {
 };
 const ActionTypes = keyMirror({
     MOVIE_FETCH : null,
-    MOVIE_SEARCH: null
+    MOVIE_SEARCH: null,
+    MOVIE_SEARCH_CLEAR: null
 });
 
 const StoreEvents = keyMirror({
@@ -27,6 +28,12 @@ const ServerCacheError = {
     CACHE_SYS_ERROR: 13,
     INVALID_KEY: 14
     
+};
+
+const ClientCacheError = {
+    DB_LOAD_ERROR: 21,
+    NOT_CONNECTED : 22,
+    TRANSACTION_FAILED: 23
 };
 
 const IMDB_API_KEY = "541f4bed734234b7ec445338523c49fe";
