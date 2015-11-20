@@ -40,7 +40,7 @@ var get_movies = function(pageNum) {
     var movies = [];
     var totalPages = 1;
     var cur_year = new Date().getFullYear();
-    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
+    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?certification_country=US&certification.lte=PG-13&primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
     //console.log("movie_url : " + movie_url)
     try {
         var resp = request('GET', movie_url);

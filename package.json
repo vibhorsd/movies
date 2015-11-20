@@ -47,9 +47,10 @@
         "react-addons-update": "0.14.1",
         "react-component-gallery": "1.2.1",
         "react-inline-css": "2.0.0",
+        "react-lazy-load": "2.0.0",
         "react-paginate": "0.4.0",
         "react-tap-event-plugin": "0.2.1",
-        "react-waypoint": "^1.1.2",
+        "react-waypoint": "1.1.2",
         "redis": "2.3.0",
         "superagent": "1.4.0",
         "sync-request": "2.1.0"
