@@ -41,15 +41,12 @@ var get_movies = function(pageNum) {
     var totalPages = 1;
     var cur_year = new Date().getFullYear();
     var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?certification_country=US&certification.lte=PG-13&primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
-    //console.log("movie_url : " + movie_url)
     try {
         var resp = request('GET', movie_url);
         var movieBody = resp.body.toString('utf-8');
         if(movieBody){
             try {
-                
                 var movieData = JSON.parse(movieBody);
-                //console.log("movieData : " + JSON.stringify(movieData))
                 movies = movieData.results;
                 totalPages = movieData.total_pages;
             } catch (err) {
@@ -63,23 +60,19 @@ var get_movies = function(pageNum) {
 }
 
 app.get("/fetch", (req, res) => {
-    //console.dir(req.params)
     var pageNum = req.param('page_num');
     var key = "page_" + pageNum;
     
     serverCache.getValue(key).then(function(movieList){
-        //console.log("movieList : " + JSON.stringify(movieList))
         if(movieList == null){
             var movieInfo = get_movies(pageNum);
             movieList = movieInfo.movies;
             var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
             for (var index in movieList) {
                 var movie = movieList[index];
-                //console.log(movie["id"] + " : " + movie["title"])
                 var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
             }
         }
-        
         res.send(movieList)
     });
 });
@@ -93,12 +86,10 @@ app.use((req, res) => {
                 var movieInfo = get_movies(1);
                 movieList = movieInfo.movies;
                 totalPages = movieInfo.totalPages;
-                //console.log("totalPages : " + totalPages)
                 var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
                 var totalPagePromise = serverCache.addKey(totalPageKey, totalPages, AppConst.SERVER_CACHE_EXPIRY);
                 for (var index in movieList) {
                     var movie = movieList[index];
-                    //console.log(movie["id"] + " : " + movie["title"])
                     var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
                 }
             }
