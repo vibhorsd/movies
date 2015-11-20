@@ -8,26 +8,37 @@ import AppConst from "../constants";
 import LazyLoad from "react-lazy-load";
 
 export default class Tile extends React.Component {
-    /**
-    * render
-    * @return {ReactElement} markup
-    */
+    constructor(props) {
+        super(props);
+        this.state = {opacity: 1.0};
+    }
     shouldComponentUpdate(nextProps, nextState) {
-        if (this.props.movie === nextProps.movie) {
+        if ((this.props.movie === nextProps.movie) &&
+        (this.state.opacity === nextState.opacity)) {
             return false;
         }
         return true;
+    }
+    onMouseEnter() {
+        this.setState({opacity: 0.7});
+    }
+    onMouseLeave() {
+        this.setState({opacity: 1.0});
     }
     render() {
         var poster_path = AppConst.IMDB_IMG_BASE_URL + "w500/" + this.props.movie.poster_path;
         // var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.movie.backdrop_path;
         // var releaseDate = (new Date(this.props.movie.release_date)).toDateString();
         return (
-            <LazyLoad height={this.props.height}>
-                <Paper zDepth={1} onClick={this.props.onClick}>
+            <LazyLoad height={this.props.height} threshold={10}>
+                <Paper
+                    zDepth={1}
+                    onClick={this.props.onClick}
+                    onMouseEnter={this.onMouseEnter.bind(this)}
+                    onMouseLeave={this.onMouseLeave.bind(this)}>
                     <Card>
                         <CardMedia>
-                            <img src={poster_path}/>
+                            <img src={poster_path} style={{opacity: this.state.opacity}}/>
                         </CardMedia>
                         
                     </Card>
