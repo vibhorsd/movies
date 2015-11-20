@@ -60,9 +60,7 @@ export default class App extends React.Component {
     _onSearch(value) {
     }
     
-    
     fetchMovie(pageNumber) {
-        console.log("fetchMovie ")
         var pageNumber = pageNumber.selected + 1;
         MovieFetchAction.fetch(pageNumber);
     }
