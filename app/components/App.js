@@ -126,7 +126,7 @@ export default class App extends React.Component {
                         <Waypoint
                             onEnter={this.boundWaypointEnter}
                             onLeave={this.boundWaypointExit}
-                            threshold={0.1}/>
+                            threshold={0.2}/>
                     )
                 }
                 {this.state.showLoading?(

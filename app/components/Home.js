@@ -21,7 +21,7 @@ export default class Home extends React.Component {
             var movie = movies[key];
             if(movie.poster_path != null){
                 var boundClick = this.handleClick.bind(this,key);
-                tiles.push(<Tile key={key} movie={movies[key]} onClick={boundClick}></Tile>);
+                tiles.push(<Tile key={key} movie={movies[key]} onClick={boundClick} height={(190 * 4) / 3}></Tile>);
             }
         }
         return tiles;
