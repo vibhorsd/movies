@@ -8,7 +8,6 @@ class FetchAction {
             page: page
         });
     }
-    
 }
 var FetchActionObj = new FetchAction();
 export default FetchActionObj;
