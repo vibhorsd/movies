@@ -36,7 +36,6 @@ export default class Tile extends React.Component {
                         <CardMedia>
                             <img src={poster_path} style={{opacity: this.state.opacity}}/>
                         </CardMedia>
-                        
                     </Card>
                 </Paper>
             </LazyLoad>

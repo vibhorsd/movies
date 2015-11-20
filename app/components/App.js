@@ -48,7 +48,6 @@ export default class App extends React.Component {
     _onSearch(value) {
     }
     
-    
     fetchMovie(pageNumber) {
         var pageNumber = pageNumber.selected + 1;
         MovieFetchAction.fetch(pageNumber);
@@ -122,5 +121,4 @@ export default class App extends React.Component {
             </Paper>
         );
     }
-    
 }
