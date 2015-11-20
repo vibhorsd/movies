@@ -9,21 +9,15 @@ var $ = require ('jquery');
 
 var CHANGE_EVENT = 'change';
 
-// var movies = []; // collection of movies
-
-
 class MovieStore extends EventEmitter {
     constructor(){
         super();
         this.searchText = null;
         AppDispatcher.register((action)=> {
-            console.log(" Dispatcher action Type : " + action.actionType)
             switch(action.actionType) {
-                case "GET":
+                case AppConst.ActionTypes.MOVIE_FETCH:
                 var page = action.page;
-                this.update(page);
-                // console.log("Movies list: " + JSON.stringify(movies))
-                //this.emitChange();
+                this.fetchMovieList(page);
                 break;
                 case AppConst.ActionTypes.MOVIE_SEARCH :
                 var input = action.key;
@@ -46,19 +40,15 @@ class MovieStore extends EventEmitter {
         this.currentPage = obj.currentPage;
     }
     
-    update(pageNum){
+    fetchMovieList(pageNum){
         var self = this;
-        console.log("ajax call to update")
         var url = "/fetch?page_num=" + pageNum;
         $.ajax({
             url: url,
             success: function(movieList) {
-                console.log("succes & setstate : " )
-                console.dir(movieList);
                 for (var idx in movieList) {
                     window.movies.push(movieList[idx]);
                 }
-                console.dir(window.movies);
                 self.currentPage = pageNum;
                 self.emitChange({showLoading: false});
             },

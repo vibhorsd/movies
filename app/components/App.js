@@ -14,13 +14,7 @@ import SearchBar from "./SearchBar";
 import SearchMovieAction from "../actions/SearchMovieAction";
 
 injectTapEventPlugin();
-/*function getMovieState() {
-//var ml = MovieStore.getAll();
-//console.dir(ml);
-return {
-allMovies: MovieStore.getAll()
-};
-}*/
+
 /**
 * Application component
 */
@@ -60,9 +54,7 @@ export default class App extends React.Component {
     _onSearch(value) {
     }
     
-    
     fetchMovie(pageNumber) {
-        console.log("fetchMovie ")
         var pageNumber = pageNumber.selected + 1;
         MovieFetchAction.fetch(pageNumber);
     }
@@ -137,5 +129,4 @@ export default class App extends React.Component {
             </Paper>
         );
     }
-    
 }
