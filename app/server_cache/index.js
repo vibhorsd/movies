@@ -1,19 +1,21 @@
 /**
-* Created by pushanmitra on 05/11/15.
-*/
+ * Created by pushanmitra on 05/11/15.
+ */
 import EventEmitter  from "events"
 import keyMirror from "keymirror"
 import async from "async"
 import Q from  "q"
 import redisManager from "./redis_manager"
 import app_utl from "../app_utl"
+import AppConst from "../constants"
 
 class ServerCacheManager extends app_utl.BaseController  {
     /*!
-    @constructor
-    * */
+     @constructor
+     * */
     constructor(){
         super();
+        this._typeName = "ServerCacheManager";
         this.OPERATION_EVENTS = keyMirror({
             STORE_OBJECT_CREATED: null,
             STORE_OBJECT_UPDATE : null,
@@ -26,117 +28,110 @@ class ServerCacheManager extends app_utl.BaseController  {
             STORE_DISCONNECTED: null,
             STORE_CONNECTION_ERROR: null
         });
-        
+
         this.STATE = keyMirror({
             ready : null,
             disconnected: null
         });
-        
+
         this.state = this.STATE.disconnected;
         this._localDataStorage = {}
     }
-    
+
     /*!
-    connect to the caching system
-    */
+     connect to the caching system
+     */
     connect(){
         var deferred = Q.defer();
-        
-        /*async.series([
-        function(){
-        deferred.resolve();
-        this.emit(this.EVENTS.STORE_CONNECTED,{});
-    },
-    function(){
-    this.state = this.STATE.ready;
-    this.emit(this.EVENTS.STORE_READY,{});
-}
-]);*/
+        return redisManager.connect(6379,"redis"); // In case for localhost use redisManager.connect(6379,"127.0.0.1")
+    }
 
-return redisManager.connect(6379,"redis"); // In case for localhost use redisManager.connect(6379,"127.0.0.1")
+    addKey(key , object, expiry){
+        return redisManager.addKey(key, object, expiry);
+    }
 
+    updateKey(key , updateObj){
+        var deferred = Q.defer();
+        this._localDataStorage[key] = updateObj;
+        setTimeout(function(){
+            async.series([
+                function(){
+                    deferred.resolve(key);
+                },
+                function(){
+                    this.emit(this.OPERATION_EVENTS.STORE_OBJECT_UPDATE, {
+                        key : key,
+                        value: object
+                    });
+                }
+            ]);
+        },0.1);
+        return deferred.promise;
+    }
 
-//return deferred.promise;
-}
+    removeKey(key){
+        return redisManager.removeKey(key);
+    }
 
-addKey(key , object, expiry){
-    return redisManager.addKey(key, object, expiry);
-    /*var deferred = Q.defer();
-    this._localDataStorage[key] = object;
-    setTimeout(function(){
-    async.series([
-    function(){
-    deferred.resolve(key);
-},
-function(){
-this.emit(this.OPERATION_EVENTS.STORE_OBJECT_CREATED,{
-key : key,
-value: object
-});
-}
-]);
-},0.1);
-return deferred.promise;*/
-}
+    getValue (key){
+        var obj = redisManager.getValue(key);
+        return obj;
+    }
 
-updateKey(key , updateObj){
-    var deferred = Q.defer();
-    this._localDataStorage[key] = updateObj;
-    setTimeout(function(){
-        async.series([
-            function(){
-                deferred.resolve(key);
-            },
-            function(){
-                this.emit(this.OPERATION_EVENTS.STORE_OBJECT_UPDATE, {
-                    key : key,
-                    value: object
-                });
-            }
-        ]);
-    },0.1);
-    return deferred.promise;
-}
+    addMovie(movie, expiry) {
+        if (movie.id && movie.title) {
+            this.addKey(movie.id, movie, expiry);
+            var splKey = "#_#" + movie.id + "#_#" + movie.title;
+            this.addKey(splKey, movie.id, expiry);
+        }
+        else  {
+            this.error_log("[addMovie]: Invalid movie obj");
+            return;
+        }
+    }
+    searchKey(key) {
+        return redisManager.searchKey(key);
+    }
+    searchMovie(title) {
+        var deffer = Q.defer();
+        if (title) {
+            var key = "*#_#*#_#*" + title + "*";
+            var promise = redisManager.searchKey(key);
+            promise.
+            then(function(result){
+                var finalResult = [];
+                var ids = [];
+                for (var idx in result) {
+                    var key = result[idx];
+                    var compos =key.split('#_#');
+                    var title = compos.pop();
+                    var id = compos.pop();
+                    finalResult.push({title: title, id: id});
+                }
+                deffer.resolve(finalResult);
+            }.bind(this))
+                .fail(function(){
+                    this.error_log('Search fails with error');
+                    deffer.resolve([]);
+                }.bind(this)) ;
+        }
+        else {
+            async.async.series([
+                function(){
+                    deffer.reject(AppConst.ServerCacheError.INVALID_INPUT);
+                }
+            ]);
+        }
+        return deffer.promise;
+    }
 
-removeKey(key){
-    return redisManager.removeKey(key);
-    /*var deferred = Q.defer();
-    if (this._localDataStorage[key]){
-    this._localDataStorage[key] = null;
-    delete this._localDataStorage[key];
-    setTimeout(function(){
-    async.series([
-    function(){
-    deferred.resolve(key);
-},
-function(){
-this.emit(this.OPERATION_EVENTS.STORE_OBJECT_REMOVED,{
-key : key
-});
-}
-]);
-},0.1);
-}
-else {
-async.series([
-function(){
-deferred.reject(new Error("Key not exists:" + key));
-}
-]);
-}
-return deferred.promise;*/
-}
+    cleanCache(cleanAll){
+        return redisManager.cleanRedis(cleanAll);
+    }
 
-getValue (key){
-    var obj = redisManager.getValue(key);
-    return obj;
-    /*setTimeout(function(){
-    if (callback){
-    var value = this._localDataStorage[key];
-    callback(null, value);
-}
-}.bind(this),0.1);*/
-}
+    getKeys(keys) {
+        return redisManager.getKeys(keys);
+    }
 
 }
 
