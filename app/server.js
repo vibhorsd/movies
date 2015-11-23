@@ -81,11 +81,59 @@ app.get("/fetch", (req, res) => {
                 //var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
                 serverCache.addMovie(movie, AppConst.SERVER_CACHE_EXPIRY);
             }
-        }
+        }        
         res.send(movieList)
     });
 });
 
+app.get("/update/likes", (req, res) => {
+    var key = req.param('movie_id');
+    serverCache.getValue(key).then(function (movie) {
+        if ("likes" in movie) {
+	    var value = movie["likes"];
+            var inc  = value + 1;
+	    movie["likes"] = inc;
+	    var promise = serverCache.addKey(key,movie, AppConst.SERVER_CACHE_EXPIRY);
+	} else {
+	    movie["likes"] = 1;
+	    var promise = serverCache.addKey(key,movie, AppConst.SERVER_CACHE_EXPIRY);
+	}
+	
+	res.send(movie);
+    });
+});
+
+app.get("/update/dislikes", (req, res) => {
+    var key = req.param('movie_id');
+    serverCache.getValue(key).then(function (movie) {
+        if ("dislikes" in movie) {
+	    var value = movie["dislikes"];
+            var inc  = value + 1;
+	    movie["dislikes"] = inc;
+	    var promise = serverCache.addKey(key,movie, AppConst.SERVER_CACHE_EXPIRY);
+	} else {
+	    movie["dislikes"] = 1;
+	    var promise = serverCache.addKey(key,movie, AppConst.SERVER_CACHE_EXPIRY);
+	}
+	
+	res.send(movie);
+    });
+});
+
+app.get("/fetch/likes/dislikes", (req, res) => {
+    var key = req.param('movie_id');
+    var count = {likes: 0,dislikes: 0};
+    serverCache.getValue(key).then(function (movie) {
+        if ("likes" in movie) {
+	    count.likes = movie["likes"];
+	} 
+        if ("dislikes" in movie) {
+	    count.dislikes = movie["dislikes"];
+	}
+	res.send(count);
+    });
+
+});
 app.post("/search_movie", (req, res) =>{
     //console.log("***** Search **");
     //console.dir(req.body);
