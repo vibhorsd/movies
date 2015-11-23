@@ -8,9 +8,6 @@ import AppConst from "../constants/"
 var $ = require ('jquery');
 
 var CHANGE_EVENT = 'change';
-var EVENT = 'event';
-// var movies = []; // collection of movies
-
 
 class MovieStore extends EventEmitter {
     constructor(){
@@ -19,13 +16,10 @@ class MovieStore extends EventEmitter {
         this.movie;
         this.initial_count;
         AppDispatcher.register((action)=> {
-            console.log(" Dispatcher action Type : " + action.actionType)
             switch(action.actionType) {
-                case "GET":
+                case AppConst.ActionTypes.MOVIE_FETCH:
                 var page = action.page;
-                this.update(page);
-                // console.log("Movies list: " + JSON.stringify(movies))
-                //this.emitChange();
+                this.fetchMovieList(page);
                 break;
                 case AppConst.ActionTypes.MOVIE_SEARCH :
                 var input = action.key;
@@ -60,19 +54,15 @@ class MovieStore extends EventEmitter {
         this.currentPage = obj.currentPage;
     }
     
-    update(pageNum){
+    fetchMovieList(pageNum){
         var self = this;
-        console.log("ajax call to update")
         var url = "/fetch?page_num=" + pageNum;
         $.ajax({
             url: url,
             success: function(movieList) {
-                console.log("succes & setstate : " )
-                console.dir(movieList);
                 for (var idx in movieList) {
                     window.movies.push(movieList[idx]);
                 }
-                console.dir(window.movies);
                 self.currentPage = pageNum;
                 self.emitChange({showLoading: false});
             },
@@ -84,12 +74,10 @@ class MovieStore extends EventEmitter {
     
     updateLike(movie_id) {
         var self = this;
-        console.log("ajax call to update Like")
         var url = "/update/likes?movie_id=" + movie_id;
         $.ajax({
             url: url,
             success: function(movie) {
-                console.log("succes");
 		self.movie = movie;
                 self.emitLikeChange();
             },
@@ -101,12 +89,10 @@ class MovieStore extends EventEmitter {
 
     updateDislike(movie_id) {
         var self = this;
-        console.log("ajax call to update disLike")
         var url = "/update/dislikes?movie_id=" + movie_id;
         $.ajax({
             url: url,
             success: function(movie) {
-                console.log("succes");
                 self.movie = movie;
                 self.emitLikeChange();
             },
@@ -118,12 +104,10 @@ class MovieStore extends EventEmitter {
     
     fetchLikesDislikes(movie_id) {
         var self = this;
-        console.log("ajax call to display Like dislike");
         var url = "/fetch/likes/dislikes?movie_id=" + movie_id;
         $.ajax({
             url: url,
             success: function(value) {
-                console.log("succes");
                 self.initial_count = value;
 	        self.emitInitialCount();
             },
@@ -137,7 +121,7 @@ class MovieStore extends EventEmitter {
         if (this.searchText) {
             var movies;
             movies = window.movies.filter((movie)=>{
-                return movie.title.match(new RegExp('^' + this.searchText.replace(/\W\s/g, ''), 'i'))
+                return (movie.title.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0)? true: false;
             });
             return movies;
         }
@@ -153,6 +137,7 @@ class MovieStore extends EventEmitter {
         change.currentPage = this.currentPage;
         this.emit(CHANGE_EVENT, change);
     }
+
     emitLikeChange() {
 	this.emit(CHANGE_EVENT, this.movie);
     }

@@ -3,6 +3,8 @@ npmcache:
     dockerfile: docker/cache/Dockerfile
     volumes:
         - "/opt/movies/node_modules"
+    external_links:
+        - npmrepo
 movies:
     build: .
     dockerfile: docker/app/Dockerfile
@@ -14,3 +16,8 @@ movies:
         - npmcache
     links:
         - npmcache
+        - redis
+redis:
+    image: redis:3.0.5
+    ports:
+        - "6379:6379"

@@ -1,5 +1,8 @@
 # Created by https://www.gitignore.io/api/node,osx
 
+### babel build ###
+dist
+
 ### Node ###
 # Logs
 logs
@@ -57,3 +60,18 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+### Vim ###
+[._]*.s[a-w][a-z]
+[._]s[a-w][a-z]
+*.un~
+Session.vim
+.netrwhist
+*~
+### IntelliJ ####
+*.iml
+*.idea/*
+
+### Redis ###
+*.rdb
+*.db

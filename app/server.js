@@ -40,16 +40,13 @@ var get_movies = function(pageNum) {
     var movies = [];
     var totalPages = 1;
     var cur_year = new Date().getFullYear();
-    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
-    //console.log("movie_url : " + movie_url)
+    var movie_url = AppConst.IMDB_BASE_URL + "discover/movie?certification_country=US&certification.lte=PG-13&primary_release_year=" + cur_year + "&api_key=" + AppConst.IMDB_API_KEY + "&page=" + pageNum;
     try {
         var resp = request('GET', movie_url);
         var movieBody = resp.body.toString('utf-8');
         if(movieBody){
             try {
-                
                 var movieData = JSON.parse(movieBody);
-                //console.log("movieData : " + JSON.stringify(movieData))
                 movies = movieData.results;
                 totalPages = movieData.total_pages;
             } catch (err) {
@@ -63,28 +60,23 @@ var get_movies = function(pageNum) {
 }
 
 app.get("/fetch", (req, res) => {
-    //console.dir(req.params)
     var pageNum = req.param('page_num');
     var key = "page_" + pageNum;
     
     serverCache.getValue(key).then(function(movieList){
-        //console.log("movieList : " + JSON.stringify(movieList))
         if(movieList == null){
             var movieInfo = get_movies(pageNum);
             movieList = movieInfo.movies;
             var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
             for (var index in movieList) {
                 var movie = movieList[index];
-                //console.log(movie["id"] + " : " + movie["title"])
                 var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
             }
-        }
-        
+        }        
         res.send(movieList)
     });
 });
 app.get("/update/likes", (req, res) => {
-    console.log('update like');
     var key = req.param('movie_id');
     serverCache.getValue(key).then(function (movie) {
         if ("likes" in movie) {
@@ -101,7 +93,6 @@ app.get("/update/likes", (req, res) => {
     });
 });
 app.get("/update/dislikes", (req, res) => {
-    console.log('update dislike');
     var key = req.param('movie_id');
     serverCache.getValue(key).then(function (movie) {
         if ("dislikes" in movie) {
@@ -118,7 +109,6 @@ app.get("/update/dislikes", (req, res) => {
     });
 });
 app.get("/fetch/likes/dislikes", (req, res) => {
-    console.log('fetch like dislike');
     var key = req.param('movie_id');
     var count = {likes: 0,dislikes: 0};
     serverCache.getValue(key).then(function (movie) {
@@ -128,10 +118,10 @@ app.get("/fetch/likes/dislikes", (req, res) => {
         if ("dislikes" in movie) {
 	    count.dislikes = movie["dislikes"];
 	}
-	console.log('value: ', count);
 	res.send(count);
     });
 });
+
 app.use((req, res) => {
     var key = "page_1";
     var totalPageKey = "total_pages";
@@ -142,12 +132,10 @@ app.use((req, res) => {
                 var movieInfo = get_movies(1);
                 movieList = movieInfo.movies;
                 totalPages = movieInfo.totalPages;
-                //console.log("totalPages : " + totalPages)
                 var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
                 var totalPagePromise = serverCache.addKey(totalPageKey, totalPages, AppConst.SERVER_CACHE_EXPIRY);
                 for (var index in movieList) {
                     var movie = movieList[index];
-                    //console.log(movie["id"] + " : " + movie["title"])
                     var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
                 }
             }

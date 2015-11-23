@@ -11,10 +11,6 @@ import MovieFetchAction from "../actions/FetchMovieAction";
 import MovieStore from "../stores/MovieStore";
 
 export default class DetailedTile extends React.Component {
-    /**
-    * render
-    * @return {ReactElement} markup
-    */
     constructor(props) {
         super(props);
         this.state = {like_count : 0, dislike_count : 0};
@@ -52,6 +48,11 @@ export default class DetailedTile extends React.Component {
 	MovieFetchAction.updateDislike(movie_id);
     }
 
+    /**
+	* render
+	* @return {ReactElement} markup
+    */
+
     render() {
         var poster_path = AppConst.IMDB_IMG_BASE_URL + "w500/" + this.props.movie.poster_path;
         var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.movie.backdrop_path;
@@ -60,6 +61,7 @@ export default class DetailedTile extends React.Component {
 	var likes = this.state.like_count;
 	var dislikes = this.state.dislike_count;
 	var count = likes - dislikes;
+
         return (
             <GridList
                 cols={2}
@@ -93,32 +95,10 @@ export default class DetailedTile extends React.Component {
                                 className="material-icons"
                                 color={"rgb(253,0,0)"}>mood_bad</FontIcon>
                         </FloatingActionButton>
-                    </CardActions>                    
+                    </CardActions>
                 </Card>
             </GridTile>
         </GridList>
     );
 }
-//     render() {
-//         var poster_path = AppConst.IMDB_IMG_BASE_URL + "w500/" + this.props.component.poster_path;
-//         var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.component.backdrop_path;
-//         //console.log(poster_path)
-//
-//         return(<GridTile style={{ overflowY: 'auto'}}>
-//         < Card >
-//         < CardHeader title = {this.props.component.title} avatar = {backdrop_path} />
-//
-//     < CardMedia overlay = { < CardTitle title = {this.props.component.title} />} >
-//     < img src = {poster_path} />
-// </ CardMedia>
-// < CardActions >
-// < FlatButton label = "Like" />
-// < FlatButton label = "Dislike" />
-// </ CardActions>
-// < CardText >
-// {this.props.component.overview}
-// </ CardText>
-// </ Card>
-// </GridTile>);
-// }
 }
