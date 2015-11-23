@@ -147,11 +147,11 @@ class MovieStore extends EventEmitter {
 
     _getSearchCacheMovies(key) {
         var allKeys = Object.keys(this.searchCache);
-        console.dir(allKeys);
+        //console.dir(allKeys);
         var selectedKeys = allKeys.filter((movie_key)=>{
             return (movie_key.toLowerCase().indexOf(key.toLowerCase()) >= 0)? true: false;
         });
-        console.dir(selectedKeys);
+        //console.dir(selectedKeys);
 
         var searchResult = [];
         var titles = [];
