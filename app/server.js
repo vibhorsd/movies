@@ -138,7 +138,7 @@ app.post("/search_movie", (req, res) =>{
     //console.log("***** Search **");
     //console.dir(req.body);
     var excludeMovies = req.body.exclude;
-    var searchTitle = req.body.keyword;
+    var searchTitle = req.body.keyword.toLowerCase();
     //console.log("***** search:" + searchTitle);
     if (searchTitle) {
         serverCache.searchMovie(searchTitle).then(function(results){
