@@ -81,7 +81,7 @@ class ServerCacheManager extends app_utl.BaseController  {
     addMovie(movie, expiry) {
         if (movie.id && movie.title) {
             this.addKey(movie.id, movie, expiry);
-            var splKey = "#_#" + movie.id + "#_#" + movie.title;
+            var splKey = "#_#" + movie.id + "#_#" + movie.title.toLowerCase();
             this.addKey(splKey, movie.id, expiry);
         }
         else  {
