@@ -62,7 +62,7 @@ class MovieStore extends EventEmitter {
         if (this.searchText) {
             var movies;
             movies = window.movies.filter((movie)=>{
-                return movie.title.match(new RegExp('^' + this.searchText.replace(/\W\s/g, ''), 'i'))
+                return (movie.title.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0)? true: false;
             });
             return movies;
         }
