@@ -147,16 +147,18 @@ class MovieStore extends EventEmitter {
 
     _getSearchCacheMovies(key) {
         var allKeys = Object.keys(this.searchCache);
-
+        //console.dir(allKeys);
         var selectedKeys = allKeys.filter((movie_key)=>{
-            return movie_key.match(new RegExp('^' + key.replace(/\W\s/g, ''), 'i'));
+            return (movie_key.toLowerCase().indexOf(key.toLowerCase()) >= 0)? true: false;
         });
+        //console.dir(selectedKeys);
 
         var searchResult = [];
         var titles = [];
-        for(var id in selectedKeys){
+        for(var idx in selectedKeys){
+            var id = selectedKeys[idx];
             searchResult.push(this.searchCache[id]);
-            keys.push(this.searchCache[id].title);
+            titles.push(this.searchCache[id].title);
         }
 
         return {results: searchResult, titles:titles};
@@ -176,7 +178,7 @@ class MovieStore extends EventEmitter {
 
             var searchResultInCache = this._getSearchCacheMovies(this.searchText);
 
-            if (searchRemote) {
+            if (searchRemote && this.searchText.length === 1) {
                 this.searchRemote(searchResultInCache.titles.concat(titleInMovies));
             }
             return movies.concat(searchResultInCache.results);
@@ -204,13 +206,17 @@ class MovieStore extends EventEmitter {
     }
 
     searchMovies(key){
+        var showLoading = false;
         if (key.length > 0) {
             this.searchText = key;
+            if (this.searchText.length == 1) {
+                showLoading = true;
+            }
         }
         else {
             this.searchText = null;
         }
-        this.emitChange({showLoading:true}, true);
+        this.emitChange({showLoading:showLoading}, true);
     }
     /**
     * @param {function} callback

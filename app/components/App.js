@@ -77,6 +77,7 @@ export default class App extends React.Component {
     }
     onSearch(event) {
         var text = event.target.value;
+        text = text.trim();
         if (text && (text.length > 0)) {
             SearchMovieAction.search(text);
         } else {
