@@ -1,7 +1,7 @@
 import React from "react";
 import {
     Card, CardHeader, Avatar, CardActions, CardText, GridList, GridTile,
-    FloatingActionButton, FontIcon
+    FloatingActionButton, FontIcon, Badge
 } from "material-ui";
 import AppConst from "../constants"
 import MovieFetchAction from "../actions/FetchMovieAction";
@@ -10,7 +10,7 @@ import MovieStore from "../stores/MovieStore";
 export default class DetailedTile extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {like_count : 0, dislike_count : 0};
+        this.state = {likeCount: 0, dislikeCoun: 0};
         this._onLikeChange = this._onLikeChange.bind(this);
         this._getInitialCount = this._getInitialCount.bind(this);
     }
@@ -20,21 +20,19 @@ export default class DetailedTile extends React.Component {
         MovieStore.addLikeListener(this._onLikeChange);
         MovieFetchAction.fetchLikesDislikes(movie_id);
     }
-    _getInitialCount(initial_count) {
-        var like_count = initial_count.likes;
-        var dislike_count = initial_count.dislikes;
-        this.setState({like_count: like_count, dislike_count: dislike_count});
+    _getInitialCount(initialCount) {
+        this.setState({likeCount: initialCount.likes, dislikeCount: initialCount.dislikes});
     }
     _onLikeChange(movie) {
-        var like_count = 0;
-        var dislike_count = 0;
+        var likeCount = 0;
+        var dislikeCount = 0;
         if ("likes" in movie) {
-            like_count = movie.likes;
+            likeCount = movie.likes;
         }
         if ("dislikes" in movie) {
-            dislike_count = movie.dislikes;
+            dislikeCount = movie.dislikes;
         }
-        this.setState({like_count: like_count, dislike_count: dislike_count});
+        this.setState({likeCount: likeCount, dislikeCount: dislikeCount});
     }
     
     updateLike(movie_id) {
@@ -49,15 +47,10 @@ export default class DetailedTile extends React.Component {
     * render
     * @return {ReactElement} markup
     */
-    
     render() {
         var poster_path = AppConst.IMDB_IMG_BASE_URL + "w500/" + this.props.movie.poster_path;
         var backdrop_path = AppConst.IMDB_IMG_BASE_URL + "w300/" + this.props.movie.backdrop_path;
         var releaseDate = (new Date(this.props.movie.release_date)).toDateString();
-        var movie_id = this.props.movie.id;
-        var likes = this.state.like_count;
-        var dislikes = this.state.dislike_count;
-        var count = likes - dislikes;
         
         return (
             <GridList
@@ -81,17 +74,20 @@ export default class DetailedTile extends React.Component {
                     </CardHeader>
                     <CardText>{this.props.movie.overview}</CardText>
                     <CardActions>
-                        <span>{count !=0?count:""}</span>
-                        <FloatingActionButton backgroundColor={"white"} mini={true} label="label" onClick={this.updateLike.bind(this, movie_id)}>
-                            <FontIcon
-                                className="material-icons"
-                                color={"rgb(54,137,227)"}>mood</FontIcon>
-                        </FloatingActionButton>
-                        <FloatingActionButton backgroundColor={"white"} mini={true} onClick={this.updateDislike.bind(this, movie_id)}>
-                            <FontIcon
-                                className="material-icons"
-                                color={"rgb(253,0,0)"}>mood_bad</FontIcon>
-                        </FloatingActionButton>
+                        <Badge badgeContent={this.state.likeCount} primary={true} badgeStyle={{top:12, right:12, backgroundColor:"rgb(54,137,227)"}}>
+                            <FloatingActionButton backgroundColor={"white"} mini={true} label="label" onClick={this.updateLike.bind(this, this.props.movie.id)}>
+                                <FontIcon
+                                    className="material-icons"
+                                    color={"rgb(54,137,227)"}>mood</FontIcon>
+                            </FloatingActionButton>
+                        </Badge>
+                        <Badge badgeContent={this.state.dislikeCount} primary={true} badgeStyle={{top:12, right:12, backgroundColor:"rgb(253,0,0)"}}>
+                            <FloatingActionButton backgroundColor={"white"} mini={true} onClick={this.updateDislike.bind(this, this.props.movie.id)}>
+                                <FontIcon
+                                    className="material-icons"
+                                    color={"rgb(253,0,0)"}>mood_bad</FontIcon>
+                            </FloatingActionButton>
+                        </Badge>
                     </CardActions>
                 </Card>
             </GridTile>
