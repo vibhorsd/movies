@@ -13,6 +13,7 @@ class MovieStore extends EventEmitter {
     constructor(){
         super();
         this.searchText = null;
+        this.searchCache = {};
         AppDispatcher.register((action)=> {
             switch(action.actionType) {
                 case AppConst.ActionTypes.MOVIE_FETCH:
@@ -47,7 +48,15 @@ class MovieStore extends EventEmitter {
             url: url,
             success: function(movieList) {
                 for (var idx in movieList) {
+
+                    // Adding it main store object
                     window.movies.push(movieList[idx]);
+
+                    // Removing it from temp search @storage
+                    var key = movieList.id + movieList[idx].title;
+                    self.searchCache[key] = null;
+                    delete  self.searchCache[key];
+
                 }
                 self.currentPage = pageNum;
                 self.emitChange({showLoading: false});
@@ -57,20 +66,66 @@ class MovieStore extends EventEmitter {
             }
         });
     }
-    
-    getAllMovie() {
+    searchRemote(exists) {
+        console.log("searching");
+        var url = "/search_movie";
+        $.post(url,{
+            keyword:this.searchText,
+            exclude:exists
+        } ,function(result){
+
+            //console.dir(result);
+            if (result.length > 0) {
+                for (var idx in result) {
+                    var movie = result[idx];
+                    this.searchCache[movie.id + movie.title] = movie;
+                }
+            }
+            this.emitChange({showLoading:false}, false);
+        }.bind(this));
+    }
+
+    _getSearchCacheMovies(key) {
+        var allKeys = Object.keys(this.searchCache);
+
+        var selectedKeys = allKeys.filter((movie_key)=>{
+            return movie_key.match(new RegExp('^' + key.replace(/\W\s/g, ''), 'i'));
+        });
+
+        var searchResult = [];
+        var titles = [];
+        for(var id in selectedKeys){
+            searchResult.push(this.searchCache[id]);
+            keys.push(this.searchCache[id].title);
+        }
+
+        return {results: searchResult, titles:titles};
+
+    }
+    getAllMovie(searchRemote) {
         if (this.searchText) {
             var movies;
+            var titleInMovies = [];
             movies = window.movies.filter((movie)=>{
                 return (movie.title.toLowerCase().indexOf(this.searchText.toLowerCase()) >= 0)? true: false;
             });
-            return movies;
+            movies.forEach(function(movie){
+                titleInMovies.push(movie.title);
+            });
+
+            var searchResultInCache = this._getSearchCacheMovies(this.searchText);
+
+            if (searchRemote) {
+                this.searchRemote(searchResultInCache.titles.concat(titleInMovies));
+            }
+            return movies.concat(searchResultInCache.results);
         }
-        else
-        return window.movies;
+        else {
+            return window.movies;
+        }
     }
-    emitChange(change) {
-        var movies = this.getAllMovie();
+    emitChange(change, searchRemote) {
+        var movies = this.getAllMovie(searchRemote);
         change.allMovies = movies;
         change.search = !!this.searchText;
         change.totalPages = this.totalPages;
@@ -82,9 +137,10 @@ class MovieStore extends EventEmitter {
         if (key.length > 0) {
             this.searchText = key;
         }
-        else
-        this.searchText = null;
-        this.emitChange({showLoading:true});
+        else {
+            this.searchText = null;
+        }
+        this.emitChange({showLoading:true}, true);
     }
     /**
     * @param {function} callback

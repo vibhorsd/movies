@@ -7,9 +7,14 @@ import App from "./components/App";
 import AppConst from "./constants/"
 import serverCache from "./server_cache"
 import app_utl from "./app_utl"
+var bodyParser = require('body-parser');
 
 const app = express();
 
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+    extended: true
+}));
 app.use(function(req, res, next) {
     GLOBAL.navigator = {
         userAgent: req.headers['user-agent']
@@ -28,12 +33,14 @@ serverCache.connect().then(function(){
     console.log('[Connected]');
     serverCache.log("Server cache [Connected]");
     const port = process.env.PORT || 3000;
-    app.listen(port);
-    serverCache.log('Movie app server started @ port : ' + port);
-    
+    serverCache.cleanCache().then(function(){
+        app.listen(port);
+        serverCache.log('Movie app server started @ port : ' + port);
+    });
 },function(err){
     serverCache.error_log("Server cache connection Error:" + err);
 });
+
 
 var get_movies = function(pageNum) {
     console.log("Fetch movie list ......")
@@ -70,12 +77,64 @@ app.get("/fetch", (req, res) => {
             var promise = serverCache.addKey(key,movieList, AppConst.SERVER_CACHE_EXPIRY);
             for (var index in movieList) {
                 var movie = movieList[index];
-                var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
+                //console.log(movie["id"] + " : " + movie["title"])
+                //var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
+                serverCache.addMovie(movie, AppConst.SERVER_CACHE_EXPIRY);
             }
         }
         res.send(movieList)
     });
 });
+
+app.post("/search_movie", (req, res) =>{
+    //console.log("***** Search **");
+    //console.dir(req.body);
+    var excludeMovies = req.body.exclude;
+    var searchTitle = req.body.keyword;
+    //console.log("***** search:" + searchTitle);
+    if (searchTitle) {
+        serverCache.searchMovie(searchTitle).then(function(results){
+            //console.dir(results);
+            var keys = [];
+            if (results.length > 0) {
+                //console.dir(results);
+                results.forEach(function(searchResult){
+                    if (excludeMovies.indexOf(searchResult.title) === -1) {
+                        keys.push(searchResult.id);
+                    }
+
+                });
+                //console.dir(keys);
+                if (keys.length > 0) {
+                    serverCache.getKeys(keys).then(function(resultsNew){
+                        app_utl.logger.info("Search: Sending total:" + resultsNew.length+ ", search:" + searchTitle);
+                        res.send(resultsNew);
+                    }).fail(function(err){
+                        app_utl.logger.error("Search: get Keys error:" + err + ", search :" + searchTitle);
+                    });
+                }
+                else {
+                    app_utl.logger.info("Search: No new key:" + searchTitle);
+                    res.send([]);
+                }
+            }
+            else {
+                app_utl.logger.info("Search: Empty search:" + searchTitle);
+                res.send([]);
+            }
+
+
+        }).fail(function(){
+            app_utl.logger.error("Search: search_movie error:" + err + ", search:" + searchTitle);
+            res.send([]);
+        });
+
+    }
+    else {
+        res.send([]);
+    }
+});
+
 app.use((req, res) => {
     var key = "page_1";
     var totalPageKey = "total_pages";
@@ -90,7 +149,9 @@ app.use((req, res) => {
                 var totalPagePromise = serverCache.addKey(totalPageKey, totalPages, AppConst.SERVER_CACHE_EXPIRY);
                 for (var index in movieList) {
                     var movie = movieList[index];
-                    var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
+                    //console.log(movie["id"] + " : " + movie["title"])
+                    //var moviePromise = serverCache.addKey(movie["id"],movie, AppConst.SERVER_CACHE_EXPIRY);
+                    serverCache.addMovie(movie, AppConst.SERVER_CACHE_EXPIRY);
                 }
             }
             

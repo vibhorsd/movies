@@ -86,8 +86,8 @@ describe("ServerCache Test",()=>{
 
     });
 
-    it("should remove", (done) => {
-        setTimeout(done, 10000);
+    it("should remove", function(done){
+        this.timeout(10000);
         var cbsucess;
         //cbsucess = jest.genMockFunction();
         //serverCacheManager.addKey("key1","val");
@@ -96,10 +96,68 @@ describe("ServerCache Test",()=>{
         }, function(err){
             assert.equal(null, err);
             console.log("Error while removing:" + err);
-            done();
+            //done();
         });
 
         //expect(cbsucess).toBeCalled();
+    });
+
+    it("should search", function(done){
+        serverCacheManager.searchKey("*").then(function(result){
+            //console.dir(result);
+            done();
+        }).fail(function(){
+            console.log("Error while searching:" + err);
+            assert.equal(null, err);
+            //done();
+        });
+    });
+
+    it("should clean old keys", function(done){
+        this.timeout(10000);
+        serverCacheManager.cleanCache().then(function(){done()});
+    });
+
+    it("should get keys", function(done){
+        this.timeout(15000);
+        serverCacheManager.addKey("1", "x");
+        serverCacheManager.addKey("2", "y");
+        setTimeout(function(){
+            serverCacheManager.getKeys(["1","2"]).then(function(values){
+                assert.notEqual(values, null);
+                assert.equal(values.length,2);
+                assert.equal(values[0],"x");
+                assert.equal(values[1],"y");
+                done();
+            }).fail(function(err){
+                console.log("Error while getting keys:" + err);
+                assert.equal(null, err);
+                done();
+            });
+        },2000);
+
+    });
+
+    it("should search #_#", function(done){
+        this.timeout(10000);
+        serverCacheManager.addKey("#_#1#_#abc","x");
+        setTimeout(function(){
+            serverCacheManager.searchMovie("abc").then(function(results){
+                console.dir(results);
+                assert.notEqual(results, null);
+                assert.notEqual(results.length, 0);
+                var flag =false;
+                for (var idx in results) {
+                    if (results[idx].title === "abc" && results[idx].id == "1") {
+                        flag = true;
+                    }
+                }
+                assert.equal(flag, true);
+                serverCacheManager.removeKey("1#_#abc");
+                done();
+            });
+        },1000)
+
     });
 
     /*it("should connect", (done) => {
