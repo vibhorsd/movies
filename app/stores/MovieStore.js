@@ -80,8 +80,8 @@ class MovieStore extends EventEmitter {
                     var movie = result[idx];
                     this.searchCache[movie.id + movie.title] = movie;
                 }
-                this.emitChange({showLoading:false}, false);
             }
+            this.emitChange({showLoading:false}, false);
         }.bind(this));
     }
 
