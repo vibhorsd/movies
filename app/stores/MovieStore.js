@@ -206,13 +206,17 @@ class MovieStore extends EventEmitter {
     }
 
     searchMovies(key){
+        var showLoading = false;
         if (key.length > 0) {
             this.searchText = key;
+            if (this.searchText.length == 1) {
+                showLoading = true;
+            }
         }
         else {
             this.searchText = null;
         }
-        this.emitChange({showLoading:true}, true);
+        this.emitChange({showLoading:showLoading}, true);
     }
     /**
     * @param {function} callback
