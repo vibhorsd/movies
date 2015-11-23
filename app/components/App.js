@@ -94,7 +94,8 @@ export default class App extends React.Component {
     * @return {XML} markup
     */
     render() {
-        console.log("App change currentPage = " + this.state.currentPage + ", totalPages = " + this.state.totalPages);
+        //console.log("App change currentPage = " + this.state.currentPage + ", totalPages = " + this.state.totalPages);
+        //console.dir(this.state);
         
         var logo = "/images/logo.png";
         return (

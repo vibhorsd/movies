@@ -97,7 +97,7 @@ app.post("/search_movie", (req, res) =>{
             //console.dir(results);
             var keys = [];
             if (results.length > 0) {
-                console.dir(results);
+                //console.dir(results);
                 results.forEach(function(searchResult){
                     if (excludeMovies.indexOf(searchResult.title) === -1) {
                         keys.push(searchResult.id);
@@ -105,18 +105,27 @@ app.post("/search_movie", (req, res) =>{
 
                 });
                 //console.dir(keys);
-                serverCache.getKeys(keys).then(function(resultsNew){
-                    //console.dir(resultsNew);
-                    res.send(resultsNew);
-                })
+                if (keys.length > 0) {
+                    serverCache.getKeys(keys).then(function(resultsNew){
+                        app_utl.logger.info("Search: Sending total:" + resultsNew.length+ ", search:" + searchTitle);
+                        res.send(resultsNew);
+                    }).fail(function(err){
+                        app_utl.logger.error("Search: get Keys error:" + err + ", search :" + searchTitle);
+                    });
+                }
+                else {
+                    app_utl.logger.info("Search: No new key:" + searchTitle);
+                    res.send([]);
+                }
             }
             else {
+                app_utl.logger.info("Search: Empty search:" + searchTitle);
                 res.send([]);
             }
 
 
         }).fail(function(){
-            constole.log("** here **");
+            app_utl.logger.error("Search: search_movie error:" + err + ", search:" + searchTitle);
             res.send([]);
         });
 
