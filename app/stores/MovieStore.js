@@ -13,6 +13,8 @@ class MovieStore extends EventEmitter {
     constructor(){
         super();
         this.searchText = null;
+        this.movie;
+        this.initial_count;
         this.searchCache = {};
         AppDispatcher.register((action)=> {
             switch(action.actionType) {
@@ -26,6 +28,18 @@ class MovieStore extends EventEmitter {
                 break;
                 case AppConst.ActionTypes.MOVIE_SEARCH_CLEAR:
                 this.searchMovies("");
+                break;
+                case "UPDATE_LIKE":
+                var movie_id = action.movie_id;
+                this.updateLike(movie_id);
+                break;
+                case "UPDATE_DISLIKE":
+                var movie_id = action.movie_id;
+                this.updateDislike(movie_id);
+                break;
+                case "FETCH_LIKES_DISLIKES":
+                var movie_id = action.movie_id;
+                this.fetchLikesDislikes(movie_id);
                 break;
                 default:
                 // no op
@@ -66,6 +80,52 @@ class MovieStore extends EventEmitter {
             }
         });
     }
+
+    updateLike(movie_id) {
+        var self = this;
+        var url = "/update/likes?movie_id=" + movie_id;
+        $.ajax({
+            url: url,
+            success: function(movie) {
+		self.movie = movie;
+                self.emitLikeChange();
+            },
+            error: function(xhr, status, err) {
+                console.error("/update/likes", status, err.toString());
+            }
+        });
+    }
+
+    updateDislike(movie_id) {
+        var self = this;
+        var url = "/update/dislikes?movie_id=" + movie_id;
+        $.ajax({
+            url: url,
+            success: function(movie) {
+                self.movie = movie;
+                self.emitLikeChange();
+            },
+            error: function(xhr, status, err) {
+                console.error("/update/dislikes", status, err.toString());
+            }
+        });
+    }
+    
+    fetchLikesDislikes(movie_id) {
+        var self = this;
+        var url = "/fetch/likes/dislikes?movie_id=" + movie_id;
+        $.ajax({
+            url: url,
+            success: function(value) {
+                self.initial_count = value;
+	        self.emitInitialCount();
+            },
+            error: function(xhr, status, err) {
+                console.error("/fetch/likes/dislikes", status, err.toString());
+            }
+        });
+    }
+
     searchRemote(exists) {
         console.log("searching");
         var url = "/search_movie";
@@ -102,6 +162,7 @@ class MovieStore extends EventEmitter {
         return {results: searchResult, titles:titles};
 
     }
+
     getAllMovie(searchRemote) {
         if (this.searchText) {
             var movies;
@@ -124,6 +185,7 @@ class MovieStore extends EventEmitter {
             return window.movies;
         }
     }
+
     emitChange(change, searchRemote) {
         var movies = this.getAllMovie(searchRemote);
         change.allMovies = movies;
@@ -132,7 +194,15 @@ class MovieStore extends EventEmitter {
         change.currentPage = this.currentPage;
         this.emit(CHANGE_EVENT, change);
     }
+
+    emitLikeChange() {
+	this.emit(CHANGE_EVENT, this.movie);
+    }
     
+    emitInitialCount() {
+	this.emit('event_count', this.initial_count);
+    }
+
     searchMovies(key){
         if (key.length > 0) {
             this.searchText = key;
@@ -152,7 +222,14 @@ class MovieStore extends EventEmitter {
     addSearchListner(callback){
         this.on(AppConst.StoreEvents.MOVIE_SEARCH, callback);
     }
-    
+
+    addLikeListener(callback) {
+	this.on(CHANGE_EVENT, callback);
+    }    
+
+    addInitialCountListener(callback) {
+	this.on('event_count', callback);
+    }
 }
 
 var movieStoreObj = new MovieStore();
