@@ -2,7 +2,7 @@ import React from "react";
 import Tile from "./Tile";
 import DetailedTile from "./DetailedTile";
 import ComponentGallery from "react-component-gallery";
-import {Paper, Dialog, FlatButton} from "material-ui";
+import {Paper, Dialog} from "material-ui";
 /**
 * Home page component
 */

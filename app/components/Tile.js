@@ -1,9 +1,7 @@
 import React from "react";
 import {
-    Card, CardHeader, Avatar, CardMedia, CardTitle, CardActions, FlatButton,
-    CardText, GridList, GridTile, StarBorder, IconButton, Paper
-}
-from "material-ui";
+    Card, CardMedia, GridTile, Paper
+} from "material-ui";
 import AppConst from "../constants";
 import LazyLoad from "react-lazy-load";
 

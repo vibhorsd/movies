@@ -1,16 +1,10 @@
 import React from "react";
 import Home from "./Home";
 import MovieStore from "../stores/MovieStore";
-import ReactPaginate from "react-paginate";
 import MovieFetchAction from "../actions/FetchMovieAction";
 let injectTapEventPlugin = require("react-tap-event-plugin");
-import InlineCss from "react-inline-css";
-import {Paper, AppBar, FlatButton, CircularProgress, TextField, FontIcon} from "material-ui";
+import {Paper, AppBar, CircularProgress, TextField} from "material-ui";
 import Waypoint from "react-waypoint";
-
-var $ = require ('jquery');
-
-import SearchBar from "./SearchBar";
 import SearchMovieAction from "../actions/SearchMovieAction";
 
 injectTapEventPlugin();
@@ -95,9 +89,6 @@ export default class App extends React.Component {
     * @return {XML} markup
     */
     render() {
-        //console.log("App change currentPage = " + this.state.currentPage + ", totalPages = " + this.state.totalPages);
-        //console.dir(this.state);
-        
         var logo = "/images/logo.png";
         return (
             <Paper zDepth={0}>
