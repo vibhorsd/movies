@@ -15,7 +15,6 @@ class MovieStore extends EventEmitter {
         this.searchText = null;
         this.movie;
         this.initial_count;
-        this.searchCache = {};
         AppDispatcher.register((action)=> {
             switch(action.actionType) {
                 case AppConst.ActionTypes.MOVIE_FETCH:
@@ -53,6 +52,7 @@ class MovieStore extends EventEmitter {
         window.movies = obj.movies;
         this.totalPages = obj.totalPages;
         this.currentPage = obj.currentPage;
+        window.search = this.searchCache = {};
     }
     
     fetchMovieList(pageNum){
@@ -67,10 +67,12 @@ class MovieStore extends EventEmitter {
                     window.movies.push(movieList[idx]);
 
                     // Removing it from temp search @storage
-                    var key = movieList.id + movieList[idx].title;
-                    self.searchCache[key] = null;
-                    delete  self.searchCache[key];
-
+                    var key = movieList[idx].id + movieList[idx].title;
+                    if (self.searchCache[key]) {
+                        //console.log("Key found in search cache : " + key);
+                        self.searchCache[key] = null;
+                        delete  self.searchCache[key];
+                    }
                 }
                 self.currentPage = pageNum;
                 self.emitChange({showLoading: false});
@@ -127,11 +129,17 @@ class MovieStore extends EventEmitter {
     }
 
     searchRemote(exists) {
-        console.log("searching");
+        //console.log("searching");
+
+        var exists_inLowerCase = [];
+        exists.forEach((title) => {
+            exists_inLowerCase.push(title.toLowerCase());
+        });
+
         var url = "/search_movie";
         $.post(url,{
             keyword:this.searchText,
-            exclude:exists
+            exclude:exists_inLowerCase
         } ,function(result){
 
             //console.dir(result);
