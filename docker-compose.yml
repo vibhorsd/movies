@@ -9,7 +9,7 @@ movies:
     build: .
     dockerfile: docker/app/Dockerfile
     ports:
-        - "3000:3000"
+        - "0.0.0.0:3000:3000"
     volumes:
         - "./:/opt/movies"
     volumes_from:
