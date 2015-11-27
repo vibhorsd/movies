@@ -8,6 +8,7 @@ import AppConst from "../constants/"
 var $ = require ('jquery');
 
 var CHANGE_EVENT = 'change';
+var EVENT_COUNT = 'event_count';
 
 class MovieStore extends EventEmitter {
     constructor(){
@@ -28,15 +29,15 @@ class MovieStore extends EventEmitter {
                 case AppConst.ActionTypes.MOVIE_SEARCH_CLEAR:
                 this.searchMovies("");
                 break;
-                case "UPDATE_LIKE":
+                case AppConst.ActionTypes.UPDATE_MOVIE_LIKE:
                 var movie_id = action.movie_id;
                 this.updateLike(movie_id);
                 break;
-                case "UPDATE_DISLIKE":
+                case AppConst.ActionTypes.UPDATE_MOVIE_DISLIKE:
                 var movie_id = action.movie_id;
                 this.updateDislike(movie_id);
                 break;
-                case "FETCH_LIKES_DISLIKES":
+                case AppConst.ActionTypes.FETCH_LIKES_DISLIKES:
                 var movie_id = action.movie_id;
                 this.fetchLikesDislikes(movie_id);
                 break;
@@ -90,7 +91,7 @@ class MovieStore extends EventEmitter {
             url: url,
             success: function(movie) {
 		self.movie = movie;
-                self.emitLikeChange();
+                self.emitLikeDislikeChange();
             },
             error: function(xhr, status, err) {
                 console.error("/update/likes", status, err.toString());
@@ -105,7 +106,7 @@ class MovieStore extends EventEmitter {
             url: url,
             success: function(movie) {
                 self.movie = movie;
-                self.emitLikeChange();
+                self.emitLikeDislikeChange();
             },
             error: function(xhr, status, err) {
                 console.error("/update/dislikes", status, err.toString());
@@ -205,12 +206,12 @@ class MovieStore extends EventEmitter {
         this.emit(CHANGE_EVENT, change);
     }
 
-    emitLikeChange() {
+    emitLikeDislikeChange() {
 	this.emit(CHANGE_EVENT, this.movie);
     }
     
     emitInitialCount() {
-	this.emit('event_count', this.initial_count);
+	this.emit(EVENT_COUNT, this.initial_count);
     }
 
     searchMovies(key){
@@ -242,7 +243,7 @@ class MovieStore extends EventEmitter {
     }    
 
     addInitialCountListener(callback) {
-	this.on('event_count', callback);
+	this.on(EVENT_COUNT, callback);
     }
 }
 
