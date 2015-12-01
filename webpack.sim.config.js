@@ -1,9 +1,10 @@
 var webpack = require('webpack');
 
 module.exports = {
-    entry: [
-        './public/index.js'
-    ],
+    entry: {
+        app: './public/index.js',
+        vendor: ["react", "react-dom", "redux", "react-redux","redux-thunk","react-hot-loader"]
+    },
     module: {
         loaders: [{
             test: /\.jsx?$/,
@@ -25,5 +26,6 @@ module.exports = {
     },
     plugins: [
         //new webpack.HotModuleReplacementPlugin()
+        new webpack.optimize.CommonsChunkPlugin(/* chunkName= */"vendor", /* filename= */"vendor.bundle.js",Infinity)
     ]
 };
