@@ -2,12 +2,12 @@ export default function reducer(state = [], action) {
     switch (action.type) {
         case "INIT_DATA":
         return {
-            data: action.payload
+            data: action.data
         };
         case "GET_DATA":
         case "GET_DATA_FULFILLED":
         return {
-            data: action.payload
+            data: action.data
         };
         case "GET_DATA_PENDING":
         return {
