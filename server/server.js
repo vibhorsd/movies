@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import httpProxy from "http-proxy";
+import handleRoutes from "./routes";
 
 export default function() {
     var proxy = httpProxy.createProxyServer();
@@ -22,6 +23,9 @@ export default function() {
             });
         });
     }
+    
+    handleRoutes(app);
+    
     app.listen(port, function() {
         console.log("Server running on port " + port);
     });
