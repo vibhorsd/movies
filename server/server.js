@@ -2,6 +2,7 @@ import express from "express";
 import path from "path";
 import httpProxy from "http-proxy";
 import handleRoutes from "./routes";
+import store from "./store"
 
 export default function() {
     var proxy = httpProxy.createProxyServer();
