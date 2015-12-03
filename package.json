@@ -5,7 +5,7 @@
     "main": "server.js",
     "scripts": {
         "babelify": "babel server -d lib",
-        "start": "babel-node server",
+        "start": "nodemon --exec babel-node -- server",
         "test": "test"
     },
     "author": "",

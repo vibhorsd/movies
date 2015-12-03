@@ -10,9 +10,6 @@ export default function() {
     var isProduction = (process.env.NODE_ENV === "production");
     var port = isProduction ? process.env.PORT : 3000;
     
-    var publicPath = path.resolve(__dirname, "../client");
-    app.use(express.static(publicPath));
-    
     if (!isProduction) {
         var webpackServer = require("../webpack-server");
         webpackServer();

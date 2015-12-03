@@ -1,4 +1,5 @@
 import bodyParser from "body-parser";
+import homeRoute from "./Home";
 
 export default function(app) {
     app.use(bodyParser.json());
@@ -6,6 +7,16 @@ export default function(app) {
         extended: true
     }));
     
+    app.use(function(req, res, next) {
+        GLOBAL.navigator = {
+            userAgent: req.headers['user-agent']
+        };
+        next();
+    });
+    
+    app.get("/", (req, res) => {
+        homeRoute(req, res);
+    });
     app.get("/fetch", (req, res) => {
         var pageNum = req.param('page_num');
         var page = [];
