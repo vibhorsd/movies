@@ -2,6 +2,7 @@
 
 ### babel build ###
 dist
+lib
 
 ### Node ###
 # Logs
