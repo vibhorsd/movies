@@ -1,5 +1,5 @@
 import bodyParser from "body-parser";
-import homeRoute from "./Home";
+import Home from "./home";
 
 export default function(app) {
     app.use(bodyParser.json());
@@ -7,15 +7,15 @@ export default function(app) {
         extended: true
     }));
     
-    app.use(function(req, res, next) {
-        GLOBAL.navigator = {
-            userAgent: req.headers['user-agent']
-        };
-        next();
-    });
+    // app.use(function(req, res, next) {
+    //     GLOBAL.navigator = {
+    //         userAgent: req.headers['user-agent']
+    //     };
+    //     next();
+    // });
     
     app.get("/", (req, res) => {
-        homeRoute(req, res);
+        Home(req, res);
     });
     app.get("/fetch", (req, res) => {
         var pageNum = req.param('page_num');
