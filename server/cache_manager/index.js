@@ -256,19 +256,24 @@ class CacheManager extends EventEmitter {
     }
     
     addMap (key, object, expire) {
-        for (let k in object) {
-            if (object.hasOwnProperty(k)) {
-                var type = typeof object[k];
-                if (type !== "string") {
-                    throw Error("Invalid Entry");
+        if (key && object && expire && Object.keys(object).length > 0 && typeof expire === 'number') {
+            for (let k in object) {
+                if (object.hasOwnProperty(k)) {
+                    var type = typeof object[k];
+                    if (type !== "string") {
+                        throw Error("Invalid Entry");
+                    }
                 }
             }
+            var redisKey = this._getRedisKey(key);
+            var multi = this._redisClient.multi();
+            multi.hmsetAsync(redisKey, object);
+            multi.expire(redisKey, expire);
+            return multi.execAsync();
         }
-        var redisKey = this._getRedisKey(key);
-        var multi = this._redisClient.multi();
-        multi.hmsetAsync(redisKey, object);
-        multi.expire(redisKey, expire);
-        return multi.execAsync();
+        else {
+            throw Error("Invalid input");
+        }
     }
     
     getMap(key, insideKeys) {

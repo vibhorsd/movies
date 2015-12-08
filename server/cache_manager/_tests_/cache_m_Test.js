@@ -30,6 +30,20 @@ describe("Cache Test", () => {
         })
     });
     
+    it ("should Multiple promise", function (done){
+        var promise = cacheManager.testPromise("hi");
+        promise.then(() => {
+            console.log("Case 1");
+        });
+        promise.then(() => {
+            console.log("Case 2");
+        });
+        
+        setTimeout(()=> {
+            done();
+        }, 1000);
+    });
+    
     it("should add/get", function(done){
         this.timeout(10000);
         cacheManager.add("x", {x: "x"},100).then(() => {
