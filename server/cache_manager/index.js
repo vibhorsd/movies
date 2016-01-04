@@ -53,7 +53,6 @@ class CacheManager extends EventEmitter {
     connect () {
         this._status = this.STATUS.Connecting;
         return new Promise((resolve, reject)  => {
-            
             this._redisClient = redis.createClient(this.server.port, this.server.host);
             this._redisClient.on("connect", () => {
                 this._status = this.STATUS.Connected;

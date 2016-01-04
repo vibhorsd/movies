@@ -199,4 +199,64 @@ export default class ServerState {
             });
         });
     }
+    
+    like (movieId) {
+        return new Promise((resolve, reject) => {
+            this.movie(movieId).then((movie) => {
+                if (movie) {
+                    var update = {};
+                    if (movie.like) {
+                        update.like = movie.like + 1;
+                    }
+                    else {
+                        update.like = 1;
+                    }
+                    this.updateMovie(movieId, update).then((updatedMovie) => {
+                        resolve(updatedMovie);
+                    }).catch((err) => {
+                        logger.error("[ServerState: (like) ]: Movie update fails");
+                        reject(err);
+                    });
+                }
+                else {
+                    logger.error("[ServerState: (like) ]: Movie not exists");
+                    reject(Error("No Movie Exists"));
+                }
+                
+            }).catch((err) => {
+                logger.error("[ServerState: (like) ]: Movie Fetch fails");
+                reject(err);
+            });
+        });
+    }
+    
+    dislike (movieId) {
+        return new Promise((resolve, reject) => {
+            this.movie(movieId).then((movie) => {
+                if (movie) {
+                    var update = {};
+                    if (movie.like) {
+                        update.dislike = movie.like + 1;
+                    }
+                    else {
+                        update.dislike = 1;
+                    }
+                    this.updateMovie(movieId, update).then((updatedMovie) => {
+                        resolve(updatedMovie);
+                    }).catch((err) => {
+                        logger.error("[ServerState: (dislike) ]: Movie update fails");
+                        reject(err);
+                    });
+                }
+                else {
+                    logger.error("[ServerState: (dislike) ]: Movie not exists");
+                    reject(Error("No Movie Exists"));
+                }
+                
+            }).catch((err) => {
+                logger.error("[ServerState: (dislike) ]: Movie Fetch fails");
+                reject(err);
+            });
+        });
+    }
 }

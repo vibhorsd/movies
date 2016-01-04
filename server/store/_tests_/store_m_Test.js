@@ -1,6 +1,6 @@
 import {expect} from "chai";
 import assert from "assert";
-import store from "../../store";
+import {store, storeDispatcher} from "../../store";
 import AppConst from "../../constants"
 import {connect, fetch} from "../../store/server_actions"
 
@@ -23,11 +23,7 @@ describe("Server store Test", function(){
     
     it("should fetch", function(done){
         this.timeout(10000);
-        var fetchAction = fetch(5);
-        store.dispatch(fetchAction);
-        store.getState().promises[fetchAction.id].then((value) => {
-            console.dir(value);
-            console.log("Page : [1]: Cahced:" + value.cached);
+        storeDispatcher(fetch(5)).then((value) => {
             expect(value).to.not.equal(null);
             expect(value.page).to.not.equal(null);
             done();
@@ -35,6 +31,7 @@ describe("Server store Test", function(){
             expect(err).to.equal(null);
             done();
         });
+        
         
     });
 });

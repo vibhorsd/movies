@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import Root from "../../client/components/Root";
+import store from "../store";
 
 export default function (req, res) {
     var markup = "<!DOCTYPE html>"

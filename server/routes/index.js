@@ -1,5 +1,7 @@
 import bodyParser from "body-parser";
 import Home from "./home";
+import {storeDispatcher} from "../store";
+import {fetch} from "../store/server_actions"
 
 export default function(app) {
     app.use(bodyParser.json());
@@ -19,8 +21,16 @@ export default function(app) {
     });
     app.get("/fetch", (req, res) => {
         var pageNum = req.param('page_num');
-        var page = [];
-        res.send(page);
+        storeDispatcher(fetch(parseInt(pageNum))).then((page) => {
+            if(page) {
+                res.send(page);
+            }
+            else {
+                res.send({});
+            }
+        }).catch((err) => {
+            res.send({});
+        });
     });
     app.get("/fetch/likes/dislikes", (req, res) => {
         var key = req.param('movie_id');

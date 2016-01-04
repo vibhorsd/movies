@@ -116,8 +116,59 @@ describe("Server State Test", function(){
                 expect(err).to.equal(null);
                 done();
             });
-            
-            
+        }).catch((err) => {
+            expect(err).to.equal(null);
+            done();
+        });
+    });
+    
+    it("should like", function(done){
+        state.page(2).then((pageResult) => {
+            expect(pageResult).to.not.equal(null);
+            expect(pageResult.page).to.not.equal(null);
+            var movieId = pageResult.page.results[0].id;
+            state.like(movieId).then(() => {
+                state.movie(movieId).then((movie) => {
+                    expect(movie).to.not.equal(null);
+                    expect(movie.id).to.equal(movieId);
+                    expect((movie.like >= 1)).to.equal(true);
+                    done();
+                }).catch((err) => {
+                    expect(err).to.equal(null);
+                    done();
+                });
+            }).catch((err) => {
+                expect(err).to.equal(null);
+                done();
+            });
+        }).catch((err) => {
+            expect(err).to.equal(null);
+            done();
+        });
+    });
+    
+    it("should dislike", function(done){
+        state.page(2).then((pageResult) => {
+            expect(pageResult).to.not.equal(null);
+            expect(pageResult.page).to.not.equal(null);
+            var movieId = pageResult.page.results[0].id;
+            var title = pageResult.page.results[0].title;
+            console.log("Movie :" + movieId + ", title:" + title);
+            state.dislike(movieId).then(() => {
+                state.movie(movieId).then((movie) => {
+                    console.dir(movie);
+                    expect(movie).to.not.equal(null);
+                    expect(movie.id).to.equal(movieId);
+                    expect((movie.dislike >= 1)).to.equal(true);
+                    done();
+                }).catch((err) => {
+                    expect(err).to.equal(null);
+                    done();
+                });
+            }).catch((err) => {
+                expect(err).to.equal(null);
+                done();
+            });
         }).catch((err) => {
             expect(err).to.equal(null);
             done();
