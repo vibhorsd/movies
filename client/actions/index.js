@@ -1,3 +1,14 @@
+
+export const ACTIONS = {
+    INIT : "INIT",
+    FETCH: "FETCH",
+    FETCH_LIKE_DISLIKE : "FETCH_LIKE_DISLIKE",
+    REMOTE_FETCH_PENDING : "REMOTE_FETCH_PENDING",
+    LIKE : "LIKE",
+    DISLIKE : "DISLIKE"
+}
+
+
 export const getData = (data) => {
     return {
         type: "GET_DATA",
