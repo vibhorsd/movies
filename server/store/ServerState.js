@@ -46,6 +46,7 @@ export default class ServerState {
                     logger.info("[ServerState: (fetchMoviesFromIMDB) ]: {Fetch Done}");
                     if (needToParse) {
                         let bodyStr = body.toString('utf-8');
+                        //console.log(bodyStr);
                         var movieObject = JSON.parse(bodyStr);
                         resolve([movieObject, bodyStr]);
                     }

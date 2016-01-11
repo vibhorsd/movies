@@ -41,7 +41,7 @@ describe("Server Rest API test", function(done){
             }
             else {
                 expect(resp.statusCode).to.equal(200);
-                console.dir(body);
+                console.dir(JSON.parse(body));
                 done();
             }
         });
