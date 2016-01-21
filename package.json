@@ -6,7 +6,8 @@
   "scripts": {
     "babelify": "babel server -d lib",
     "start": "nodemon --exec babel-node -- server",
-    "test": "test"
+    "test": "test",
+      "docker-start": "RUN_ENV=docker npm start"
   },
   "author": "",
   "license": "ISC",

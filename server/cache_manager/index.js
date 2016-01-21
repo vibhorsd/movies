@@ -6,7 +6,7 @@ import logger from "../logger";
 
 var env = process.env.NODE_ENV || "development";
 var run_env = process.env.RUN_ENV || "local";
-
+console.log("run_env = " + run_env);
 bluebird.promisifyAll(redis.RedisClient.prototype);
 bluebird.promisifyAll(redis.Multi.prototype);
 
@@ -14,7 +14,7 @@ class CacheManager extends EventEmitter {
     constructor() {
         super();
         this.errors = {
-            
+
         };
         this._redisClient = null;
         this.server = setting.servers[run_env];
@@ -29,7 +29,7 @@ class CacheManager extends EventEmitter {
         this._status = this.STATUS.Disconnected;
         this.keyInfo = "AppInfo";
     }
-    
+
     // Redis key
     _getRedisKey (key) {
         if (key) {
@@ -38,7 +38,7 @@ class CacheManager extends EventEmitter {
         else {
             throw Error("Invalid key");
         }
-        
+
     }
     _getMapKey (key) {
         if (key) {
@@ -48,7 +48,7 @@ class CacheManager extends EventEmitter {
             throw Error("Invalid key");
         }
     }
-    
+
     // Coonecting to redis server
     connect () {
         this._status = this.STATUS.Connecting;
@@ -75,7 +75,7 @@ class CacheManager extends EventEmitter {
                                     logger.info("[Cache]: Flushed old info: setting new one");
                                     logger.info("[Cache]: Old :" + JSON.stringify(value));
                                     logger.info("[Cache]: New :" + JSON.stringify(info));
-                                    
+
                                     // Saving
                                     this._redisClient.hmsetAsync(redisKey,info).then(() => {
                                         resolve();
@@ -83,7 +83,7 @@ class CacheManager extends EventEmitter {
                                         logger.error("[Cache]: Set App info DB Error(2):" + err);
                                         reject(err);
                                     });
-                                    
+
                                 }).catch((err) => {
                                     logger.error("[Cache]: flush DB Error:" + err);
                                     reject(err);
@@ -106,12 +106,12 @@ class CacheManager extends EventEmitter {
                         logger.error("[Cache]: Read App info DB Error:" + err);
                         reject(err);
                     });
-                    
+
                 }).catch((err) => {
                     logger.error("[Cache]: Select DB Error:" + err);
                     reject(err);
                 });
-                
+
             });
             this._redisClient.on("error", (error) => {
                 if (this._status === this.STATUS.Connecting){
@@ -125,12 +125,12 @@ class CacheManager extends EventEmitter {
             });
         });
     }
-    
+
     // Getting app info on redis
     getRedisAppInfo (){
         return this._redisClient.hgetallAsync(this._getRedisKey(this.keyInfo));
     }
-    
+
     // Adding key to redis
     add (key, object, expiry) {
         return new Promise((resolve, reject) => {
@@ -150,7 +150,7 @@ class CacheManager extends EventEmitter {
             }
         });
     }
-    
+
     // Getting key from redis
     get (key) {
         return new Promise((resolve, reject) => {
@@ -174,7 +174,7 @@ class CacheManager extends EventEmitter {
             });
         });
     }
-    
+
     // Remove
     remove (keys) {
         var newKeys = keys.map((key) => {
@@ -182,12 +182,12 @@ class CacheManager extends EventEmitter {
         });
         return this._redisClient.delAsync(newKeys);
     }
-    
-    
+
+
     _scan (cmd,key, args) {
         return new Promise((resolve, reject) => {
             var allResult = [];
-            
+
             // Recursive scan function.
             var searchLocal = (index)=> {
                 var finalArgs = [key,index].concat(args);
@@ -203,7 +203,7 @@ class CacheManager extends EventEmitter {
                         allResult = allResult.concat(result[1]);
                         //console.log("**** RESULT ****");
                         //console.dir(result[1]);
-                        
+
                         if (next === '0') {
                             resolve(allResult);
                         }
@@ -213,12 +213,12 @@ class CacheManager extends EventEmitter {
                     }
                 });
             };
-            
+
             // Starting scane
             searchLocal('0');
         });
     }
-    
+
     // Search
     search (pattern) {
         return new Promise((resolve, reject) => {
@@ -234,13 +234,13 @@ class CacheManager extends EventEmitter {
                         allResult = allResult.concat(result[1]);
                         //console.log("**** RESULT ****");
                         //console.dir(allResult);
-                        
+
                         if (next === '0') {
                             var finalResult = allResult.map((entry) => {
                                 var prefix = setting.info.prefix + ":";
                                 return entry.split(prefix)[1];
                             });
-                            
+
                             resolve(finalResult, pattern);
                         }
                         else {
@@ -249,11 +249,11 @@ class CacheManager extends EventEmitter {
                     }
                 });
             };
-            
+
             searchLocal('0');
         });
     }
-    
+
     addMap (key, object, expire) {
         if (key && object && expire && Object.keys(object).length > 0 && typeof expire === 'number') {
             for (let k in object) {
@@ -274,7 +274,7 @@ class CacheManager extends EventEmitter {
             throw Error("Invalid input");
         }
     }
-    
+
     getMap(key, insideKeys) {
         var redisKey = this._getRedisKey(key);
         if (insideKeys && insideKeys.length > 0) {
@@ -306,7 +306,7 @@ class CacheManager extends EventEmitter {
             return this._redisClient.hgetallAsync(redisKey);
         }
     }
-    
+
     removeFromMap(mapKey, keys) {
         if (mapKey && keys && keys.length > 0) {
             var redisKey = this._getRedisKey(mapKey);
@@ -320,7 +320,7 @@ class CacheManager extends EventEmitter {
             throw Error("Invalid Input");
         }
     }
-    
+
     searchMap(mapKey, pattern) {
         var redisKey = this._getRedisKey(mapKey);
         if (mapKey && pattern) {
@@ -342,14 +342,14 @@ class CacheManager extends EventEmitter {
                     logger.error("[CacheManager]:(searchMap): Error:" + err);
                     reject(err);
                 });
-                
+
             });
         }
         else {
             throw Error("Invalid Input");
         }
     }
-    
+
     testPromise (val){
         return new Promise((resolve, reject) => {
             setTimeout(()=>{

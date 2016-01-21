@@ -9,23 +9,23 @@ import logger from "./logger";
 export default function() {
     var proxy = httpProxy.createProxyServer();
     var app = express();
-    
+
     var isProduction = (process.env.NODE_ENV === "production");
-    var port = isProduction ? process.env.PORT : 3001;
-    
+    var port = isProduction ? process.env.PORT : 3000;
+
     if (!isProduction) {
         var webpackServer = require("../webpack-server");
         webpackServer();
-        
+
         app.all("/dist/*", function(req, res) {
             proxy.web(req, res, {
                 target: "http://localhost:8080"
             });
         });
     }
-    
+
     handleRoutes(app);
-    
+
     var actionConnect = connect();
     var promise = storeDispatcher(actionConnect);
     promise.then((value) => {
@@ -36,5 +36,5 @@ export default function() {
     }).catch((err) => {
         logger.error("[Store Connection Error]");
     })
-    
+
 }

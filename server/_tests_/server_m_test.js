@@ -4,7 +4,7 @@ import assert from "assert";
 
 const host = "127.0.0.1";
 const port = "3000";
-const base_url = "http://127.0.0.1:3001";
+const base_url = "http://127.0.0.1:3000";
 
 const fetchPage = (page, method) => {
     return Promise((resole, reject) => {
@@ -13,7 +13,7 @@ const fetchPage = (page, method) => {
             method: method,
             timeout: 110000,
         };
-        
+
         request(setting, function(err, resp, body){
             if (err) {
                 reject(err);
@@ -34,7 +34,7 @@ describe("Server Rest API test", function(done){
             method: "GET",
             timeout: 110000,
         };
-        
+
         request(setting, function(err, resp, body){
             if (err) {
                 throw err;
@@ -45,6 +45,6 @@ describe("Server Rest API test", function(done){
                 done();
             }
         });
-        
+
     });
 });

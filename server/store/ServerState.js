@@ -11,7 +11,7 @@ export default class ServerState {
     connect(){
         return cacheManager.connect();
     }
-    
+
     _getMovieKey(movie) {
         if (movie.id && movie.title) {
             return movie.id + this.SEPARTOR + movie.title.toLowerCase();
@@ -20,13 +20,13 @@ export default class ServerState {
             throw Error("Invalid movie");
         }
     }
-    
+
     fetchMoviesFromIMDB(pageNum, needToParse) {
         return new Promise((resolve, reject) => {
             var totalPages = 1;
             var cur_year = new Date().getFullYear();
             var url = AppConst.IMDB_BASE_URL +
-            "discover/movie?certification_country=US&certification.lte=PG-13&primary_release_year=" + cur_year +
+            "discover/movie?certification_country=US&certification.lte=PG-13" +
             "&api_key=" + AppConst.IMDB_API_KEY +
             "&page=" + pageNum;
             var requestSetting = {
@@ -34,9 +34,9 @@ export default class ServerState {
                 method: "GET",
                 timeout: 20000
             };
-            
+
             //logger.info("[ServerState:(fetchMoviesFromIMDB)]:url =>" + requestSetting.url);
-            
+
             request(requestSetting,(err, resp, body) =>{
                 if (err) {
                     logger.error("[ServerState: (fetchMoviesFromIMDB) ]:" + err);
@@ -53,12 +53,12 @@ export default class ServerState {
                         let bodyStr = body.toString('utf-8');
                         resolve([{},bodyStr]);
                     }
-                    
+
                 }
             });
         });
     }
-    
+
     _savePageInCache (pageNum, pageStr, pageObject) {
         async.parallel([
             () => {
@@ -74,14 +74,14 @@ export default class ServerState {
                     var movie = pageObject.results[idx];
                     storeMovieObj[this._getMovieKey(movie)] = JSON.stringify(movie);
                 }
-                
+
                 cacheManager.addMap(AppConst.STORAGE_KEY.MOVIE, storeMovieObj,AppConst.SERVR_CACHE_EXPIRY).catch((err) => {
                     logger.error("[ServerState: (_savePageInCache) ]: Movie store fails");
                 });
             }
         ], ()=>{})
     }
-    
+
     page (pageNum) {
         return new Promise((resolve, reject) => {
             cacheManager.getMap(AppConst.STORAGE_KEY.PAGE, [pageNum.toString()]).then((value) => {
@@ -103,7 +103,7 @@ export default class ServerState {
                                     });
                                 },
                                 () => {
-                                    
+
                                     this._savePageInCache(pageNum.toString(), values[1], values[0]);
                                 }
                             ],()=>{})
@@ -116,15 +116,15 @@ export default class ServerState {
                     }).catch((err) => {
                         reject(err);
                     });
-                    
+
                 }
-                
+
             }).catch((err) => {
                 reject(err);
             });
         });
     }
-    
+
     movie(movieId) {
         return new Promise((resolve, reject) => {
             let pattern = "" + movieId + this.SEPARTOR + "*";
@@ -149,7 +149,7 @@ export default class ServerState {
             });
         });
     }
-    
+
     updateMovie(movieId, updateObject) {
         return new Promise((resolve, reject) => {
             this.movie(movieId).then((movie) => {
@@ -177,7 +177,7 @@ export default class ServerState {
             })
         });
     }
-    
+
     search(keyword) {
         return new Promise((resolve, reject) => {
             var pattern = "*" + this.SEPARTOR + keyword;
@@ -199,7 +199,7 @@ export default class ServerState {
             });
         });
     }
-    
+
     like (movieId) {
         return new Promise((resolve, reject) => {
             this.movie(movieId).then((movie) => {
@@ -222,14 +222,14 @@ export default class ServerState {
                     logger.error("[ServerState: (like) ]: Movie not exists");
                     reject(Error("No Movie Exists"));
                 }
-                
+
             }).catch((err) => {
                 logger.error("[ServerState: (like) ]: Movie Fetch fails");
                 reject(err);
             });
         });
     }
-    
+
     dislike (movieId) {
         return new Promise((resolve, reject) => {
             this.movie(movieId).then((movie) => {
@@ -252,7 +252,7 @@ export default class ServerState {
                     logger.error("[ServerState: (dislike) ]: Movie not exists");
                     reject(Error("No Movie Exists"));
                 }
-                
+
             }).catch((err) => {
                 logger.error("[ServerState: (dislike) ]: Movie Fetch fails");
                 reject(err);
